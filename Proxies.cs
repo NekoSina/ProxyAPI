@@ -2,8 +2,8 @@ using System.Collections.Generic;
 
 namespace ProxyAPI
 {
-    public static class Proxies
+    public static class ProxyRepository
     {
-        public static Queue<string> EndPoints = new Queue<string>();
+        private static Queue<string> Proxies = new Queue<string>();
     }
 }

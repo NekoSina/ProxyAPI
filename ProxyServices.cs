@@ -10,31 +10,33 @@ using System.IO;
 using Microsoft.AspNetCore.Http;
  namespace ProxyAPI
  {
-     public class Services
+     public class ProxyServices
      {
          public void ReadFile(IFormFile file)
         {
+            if(CheckFileSize(file))
             using (var reader = new StreamReader(file.OpenReadStream()))
             {
                 while(reader.Peek() >= 0)
                 {
-                    var endpoint = reader.ReadLine();
-                    if(CheckIfEndPoint(endpoint))
-                        Proxies.EndPoints.Enqueue(endpoint);
+                    var proxy = reader.ReadLine();
+                    if(CheckIfProxy(proxy))
+                        continue;
+                        //ProxyRepository.Proxies.Enqueue(proxy);
                 }
             }
         }
-         private bool CheckIfEndPoint(string endpoint)
+         private bool CheckIfProxy(string proxy)
         {
-            int dotcount = endpoint.Length - endpoint.Replace(".","").Length;
-            int coloncount = endpoint.Length - endpoint.Replace(":","").Length;
+            int dotcount = proxy.Length - proxy.Replace(".","").Length;
+            int coloncount = proxy.Length - proxy.Replace(":","").Length;
             
             if (dotcount == 3 && coloncount == 1)
                 {
                     ushort port;
-                    if(ushort.TryParse(endpoint.Split(':')[1], out port))
+                    if(ushort.TryParse(proxy.Split(':')[1], out port))
                     {
-                        foreach (var part in endpoint.Split(':')[0].Split('.'))
+                        foreach (var part in proxy.Split(':')[0].Split('.'))
                             {
                                 byte bytepart;
                                 if(!byte.TryParse(part, out bytepart))
@@ -48,16 +50,12 @@ using Microsoft.AspNetCore.Http;
             else 
                 return false;
         }
-        public bool CheckFileSize(IFormFile file)
+        private bool CheckFileSize(IFormFile file)
         {
             if(file.Length > 0)
                 return true;
             else
                 return false;
-        }
-        public string GetEndpoint()
-        {
-            return Proxies.EndPoints.Dequeue();
         }
      }
  }
