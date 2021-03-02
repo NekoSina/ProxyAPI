@@ -1,54 +1,53 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Hosting;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
 using System.IO;
+using ProxyAPI.Models;
 using Microsoft.AspNetCore.Http;
  namespace ProxyAPI
  {
      public class ProxyServices
      {
+         private ProxyRepository _proxyRepository;
+         public ProxyServices(ProxyRepository repository)
+         {
+             _proxyRepository = repository;
+         }
          public void ReadFile(IFormFile file)
-        {
-            if(CheckFileSize(file))
-            using (var reader = new StreamReader(file.OpenReadStream()))
-            {
-                while(reader.Peek() >= 0)
-                {
-                    var proxy = reader.ReadLine();
-                    if(CheckIfProxy(proxy))
-                        continue;
-                        //ProxyRepository.Proxies.Enqueue(proxy);
-                }
-            }
-        }
-         private bool CheckIfProxy(string proxy)
+         {
+ 
+             if(CheckFileSize(file))
+             using (var reader = new StreamReader(file.OpenReadStream()))
+             {
+                 while(reader.Peek() >= 0)
+                 {
+                     var proxy = reader.ReadLine();
+                     if(CheckIfProxy(proxy))
+                        _proxyRepository.AddProxy(new Proxy(proxy));
+                 }
+             }
+         }
+        
+        private bool CheckIfProxy(string proxy)
         {
             int dotcount = proxy.Length - proxy.Replace(".","").Length;
+
+            if (dotcount != 3) 
+                return false;
+
             int coloncount = proxy.Length - proxy.Replace(":","").Length;
             
-            if (dotcount == 3 && coloncount == 1)
-                {
-                    ushort port;
-                    if(ushort.TryParse(proxy.Split(':')[1], out port))
-                    {
-                        foreach (var part in proxy.Split(':')[0].Split('.'))
-                            {
-                                byte bytepart;
-                                if(!byte.TryParse(part, out bytepart))
-                                    return false;
-                            }
-                            return true;
-                    }    
-                    else
-                        return false;
-                }
-            else 
+            if (coloncount != 1)
                 return false;
+
+           var proxyParts = proxy.Split(':');
+           var portString = proxyParts[1];                   
+            if(!ushort.TryParse(portString, out _))
+                return false;
+
+            var ipParts = proxyParts[0].Split('.');
+            foreach (var part in ipParts)
+                if(!byte.TryParse(part, out _))
+                    return false;
+        
+            return true;
         }
         private bool CheckFileSize(IFormFile file)
         {
@@ -56,6 +55,12 @@ using Microsoft.AspNetCore.Http;
                 return true;
             else
                 return false;
+        }
+        public Proxy GetRandomProxy()
+        {
+            var random = new System.Random();
+            var randomnum = random.Next(100);
+            return _proxyRepository.GetProxy(randomnum);
         }
      }
  }

@@ -11,8 +11,8 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
-using ProxyAPI.Models;
 using Microsoft.EntityFrameworkCore;
+using ProxyAPI.Models;
 
 namespace ProxyAPI
 {
@@ -28,8 +28,8 @@ namespace ProxyAPI
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddDbContext<ProxyContext>(opt =>
-                opt.UseInMemoryDatabase("TodoList"));
+            services.AddDbContext<ProxyContext> (opt =>
+                        opt.UseSqlite("Data Source=Proxy.db"));
             services.AddControllers();
             services.AddSwaggerGen(c =>
             {
@@ -45,11 +45,10 @@ namespace ProxyAPI
                 app.UseDeveloperExceptionPage();
                 app.UseSwagger();
                 app.UseSwaggerUI(c =>
-                 {
-                     c.SwaggerEndpoint("/swagger/v1/swagger.json", "ProxyAPI V1");
-                     c.RoutePrefix = string.Empty;
-                 });
-                //app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "ProxyAPI v1"));
+                {
+                    c.SwaggerEndpoint("/swagger/v1/swagger.json", "My API V1");
+                    c.RoutePrefix = string.Empty;
+                });
             }
 
             app.UseHttpsRedirection();
