@@ -1,4 +1,5 @@
 using System.IO;
+using System.Linq;
 using ProxyAPI.Models;
 using Microsoft.AspNetCore.Http;
  namespace ProxyAPI
@@ -20,7 +21,12 @@ using Microsoft.AspNetCore.Http;
                  {
                      var proxy = reader.ReadLine();
                      if(CheckIfProxy(proxy))
-                        _proxyRepository.AddProxy(new Proxy(proxy));
+                    {
+                        if (RandomNumber(2) == 1)
+                        _proxyRepository.AddProxy(new Proxy(proxy,"Germany"));
+                        else 
+                        _proxyRepository.AddProxy(new Proxy(proxy, "America"));
+                    }
                  }
              }
          }
@@ -58,9 +64,31 @@ using Microsoft.AspNetCore.Http;
         }
         public Proxy GetRandomProxy()
         {
+            var dblength = _proxyRepository.GetDBLength();
             var random = new System.Random();
-            var randomnum = random.Next(100);
+            var randomnum = random.Next(dblength);
             return _proxyRepository.GetProxy(randomnum);
+        }
+        public int RandomNumber(int range)
+        {
+            var random = new System.Random();
+            return random.Next(range); 
+        }
+        public IQueryable GetProxies(string country, string region, int latency)
+        {
+            return _proxyRepository.GetProxies(country, region);
+        }
+        public void Cleardb()
+        {
+            _proxyRepository.Cleardb();
+        }
+        public int GetDBLength()
+        {
+            return _proxyRepository.GetDBLength();
+        }
+        public Proxy GetFirstProxy()
+        {
+            return _proxyRepository.GetFirstProxy();
         }
      }
  }

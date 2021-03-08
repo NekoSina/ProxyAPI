@@ -8,9 +8,10 @@ namespace ProxyAPI.Models
         {
 
         }
-        public Proxy(string endpoint)
+        public Proxy(string endpoint, string region)
         {
             EndPoint = endpoint;
+            Region = region;
         }
         [Key]
         public int ID {get; set; }

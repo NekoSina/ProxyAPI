@@ -15,19 +15,20 @@ namespace ProxyAPI
         {
             return _context.Proxies.Any(e => e.ID == id);
         }
-        public IQueryable<Proxy> GetProxies_Regional(string region)
-        {
-            var query = _context.Proxies
-                .Where(proxy => proxy.Region == region);
-            return query;
-        }
         public Proxy GetProxy(int id)
         {
+            
             Proxy proxy = _context.Proxies.Find(id);;
             if(proxy == null)
                 return null;
             else 
                 return proxy;
+        }
+        public IQueryable GetProxies(string region, string country)
+        {
+            var query = _context.Proxies
+                .Where(proxy => (proxy.Region == region && proxy.Country == country));
+            return query;
         }
         public void AddProxy(Proxy proxy)
         {
@@ -40,6 +41,22 @@ namespace ProxyAPI
         public void DeleteProxy(Proxy proxy)
         {
             _context.Remove(proxy);
+        }
+        public void Cleardb()
+        {
+            foreach (var proxy in _context.Proxies)
+            {
+                DeleteProxy(proxy);
+            }
+            _context.SaveChanges();
+        }
+        public int GetDBLength()
+        {
+            return _context.Proxies.Count();
+        }
+        public Proxy GetFirstProxy()
+        {
+            return _context.Proxies.First();
         }
     }    
 }
