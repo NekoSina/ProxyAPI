@@ -13,12 +13,12 @@ namespace ProxyAPI
         }
         private bool ProxyExists(int id)
         {
-            return _context.Proxies.Any(e => e.ID == id);
+            return _context.Proxies.Any(p => p.ID == id);
         }
         public Proxy GetProxy(int id)
         {
             
-            Proxy proxy = _context.Proxies.Find(id);;
+            Proxy proxy = _context.Proxies.Find(id);
             if(proxy == null)
                 return null;
             else 
@@ -26,15 +26,37 @@ namespace ProxyAPI
         }
         public IQueryable GetProxies(string region, string country)
         {
-            var query = _context.Proxies
-                .Where(proxy => (proxy.Region == region && proxy.Country == country));
-            return query;
+            if (region == null && country == null)
+            {
+                var rowcount = _context.Proxies.Count();
+                var firstid = _context.Proxies.First().ID;
+                int randomid = firstid + Random.RandomNumber(rowcount);
+                return _context.Proxies.Where(proxy => proxy.ID == randomid);
+            }
+            else 
+            {
+                return  _context.Proxies
+                    .Where(proxy => (proxy.Region == region && proxy.Country == country));
+            }
+             
         }
         public void AddProxy(Proxy proxy)
         {
-            if (!ProxyExists(proxy.ID))
+            if (ProxyExists(proxy.ID))
+            {
+                _context.SaveChanges();
+            }
+            else
             {
                 _context.Proxies.Add(proxy);
+                _context.SaveChanges();
+            }
+        }
+        public void UpdateProxy(Proxy proxy)
+        {
+            if (ProxyExists(proxy.ID))
+            {
+                _context.Update(proxy);
                 _context.SaveChanges();
             }
         }

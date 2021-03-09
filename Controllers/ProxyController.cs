@@ -22,32 +22,40 @@ namespace ProxyAPI.Controllers
 
         // GET: api/Proxy
         [HttpGet]
-        [Route("/api/getproxies")]
-        public IQueryable GetProxies(string region, string country, int latency)
+        [Route("/api/proxy")]
+        public IQueryable GetProxies(string region, string country)
         {
-            return _services.GetProxies(region, country, latency);
+            var proxies = _services.GetProxies(region, country);
+
+            return proxies;
         }
-        [HttpGet]
-        [Route("/api/randomproxy")]
-        public ActionResult<Proxy> GetRandomProxy()
-        {
-            return _services.GetRandomProxy();;
-        }
-        [HttpGet]
-        [Route("/api/firstproxy")]
-        public ActionResult<Proxy> GetFirstProxy()
-        {
-            return _services.GetFirstProxy();
-        }
+       
         [HttpPost]
-        [Route("/api/uploadfile")]
+        [Route("/api/proxy")]
         public IActionResult UploadFile(IFormFile file)
         {
             _services.ReadFile(file);
             return Ok();
         }
+
+        [HttpPatch]
+        [Route("/api/proxy")]
+        public IActionResult UpdateProxy([FromBody] Proxy proxy)
+        {
+            _services.UpdateProxy(proxy);
+            return Ok();
+        }
+
+        [HttpPut]
+        [Route("/api/proxy")]
+        public IActionResult AddProxy([FromBody] Proxy proxy)
+        {
+            _services.AddProxy(proxy);
+            return Ok();
+        }
+        
         [HttpDelete]
-        [Route("/api/delete")]
+        [Route("/api/proxy")]
         public IActionResult ClearDB()
         {
             _services.Cleardb();
