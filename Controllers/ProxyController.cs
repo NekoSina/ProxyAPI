@@ -35,6 +35,7 @@ namespace ProxyAPI.Controllers
         public IActionResult UploadFile(IFormFile file)
         {
             _services.ReadFile(file);
+            
             return Ok();
         }
 

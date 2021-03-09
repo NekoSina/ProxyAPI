@@ -11,16 +11,17 @@ namespace ProxyAPI.Models
         }
         public Proxy(string endpoint, string region)
         {
-            EndPoint = endpoint;
             Region = region;
+            IP = endpoint.Split(':')[0];
+            Port = ushort.Parse(endpoint.Split(':')[1]);
         }
         [Key]
         public int ID {get; set; }
 
-        public string EndPoint { get; set; }
+        public string IP { get; set; }
+        public ushort Port { get; set; }
         public string Region { get; set; }
         public string Country {get; set; }
-        //[DataType(DataType.Date)]
-        //public DateTime ReleaseDate { get; set; }
+        public DateTime LastTest { get; set; }
     }
 }
