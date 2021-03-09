@@ -18,7 +18,7 @@ namespace ProxyAPI
 
             using var reader = new StreamReader(file.OpenReadStream());
 
-            while (reader.Peek() >= 0)
+            while(!reader.EndOfStream)
             {
                 var proxy = reader.ReadLine();
                 if (CheckIfProxy(proxy))
