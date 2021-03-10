@@ -2,6 +2,7 @@ using System.IO;
 using System.Linq;
 using ProxyAPI.Models;
 using Microsoft.AspNetCore.Http;
+using System.Collections.Generic;
 namespace ProxyAPI
 {
     public class ProxyServices
@@ -23,7 +24,6 @@ namespace ProxyAPI
                 var proxy = reader.ReadLine();
                 if (CheckIfProxy(proxy))
                 {
-                    //THIS NEEDS WORK
                     if (Random.RandomNumber(2) == 1)
                         _proxyRepository.AddProxy(new Proxy(proxy, "Germany"));
                     else
@@ -46,10 +46,12 @@ namespace ProxyAPI
 
             var proxyParts = proxy.Split(':');
             var portString = proxyParts[1];
+
             if (!ushort.TryParse(portString, out _))
                 return false;
 
             var ipParts = proxyParts[0].Split('.');
+            
             foreach (var part in ipParts)
                 if (!byte.TryParse(part, out _))
                     return false;
@@ -59,16 +61,11 @@ namespace ProxyAPI
 
         internal void AddProxy(Proxy proxy)
         {
-            //add proxy (change proxy.Id to be unique)
-            //save changes
             _proxyRepository.AddProxy(proxy);
         }
 
         internal void UpdateProxy(Proxy proxy)
         {
-            //find proxy in db  
-            //update proxy
-            //save changes
             _proxyRepository.UpdateProxy(proxy);
         }
 
@@ -80,19 +77,25 @@ namespace ProxyAPI
             else
                 return false;
         }
-        public Proxy GetRandomProxy()
+        public Proxy GetRandomProxy(string country, string region)
         {
-            var dblength = _proxyRepository.GetDBLength();
-            var randomnum = Random.RandomNumber(dblength);
-            return _proxyRepository.GetProxy(randomnum);
-        }
-        public IQueryable GetProxies(string country, string region)
-        {
-            return _proxyRepository.GetProxies(country, region);
+            var tempList = new List<Proxy>();
+            foreach(Proxy proxy in _proxyRepository.GetProxies(country,region))
+                tempList.Add(proxy);
+            
+            if(tempList.Count == 0)
+                return null;
+
+            var randomNum = Random.RandomNumber(tempList.Count);
+            return tempList[randomNum];            
         }
         public void Cleardb()
         {
             _proxyRepository.Cleardb();
+        }
+        public void DeleteProxy(int id)
+        {
+            _proxyRepository.DeleteProxy(id);
         }
         public int GetDBLength()
         {

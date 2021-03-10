@@ -23,13 +23,10 @@ namespace ProxyAPI.Controllers
         // GET: api/Proxy
         [HttpGet]
         [Route("/api/proxy")]
-        public IQueryable GetProxies(string region, string country)
+        public Proxy GetRandomProxy(string region, string country)
         {
-            var proxies = _services.GetProxies(region, country);
-
-            return proxies;
+            return _services.GetRandomProxy(region, country);;
         }
-       
         [HttpPost]
         [Route("/api/proxy")]
         public IActionResult UploadFile(IFormFile file)
@@ -57,9 +54,9 @@ namespace ProxyAPI.Controllers
         
         [HttpDelete]
         [Route("/api/proxy")]
-        public IActionResult ClearDB()
+        public IActionResult DeleteProxy(int id)
         {
-            _services.Cleardb();
+            _services.DeleteProxy(id);
             return Ok();
         }
     }

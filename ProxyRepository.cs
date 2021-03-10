@@ -15,10 +15,9 @@ namespace ProxyAPI
         {
             return _context.Proxies.Any(p => p.ID == id);
         }
-        public Proxy GetProxy(int id)
+        public Proxy GetProxy(int idx)
         {
-            
-            Proxy proxy = _context.Proxies.Find(id);
+            Proxy proxy = _context.Proxies.Find(idx);
             if(proxy == null)
                 return null;
             else 
@@ -26,31 +25,17 @@ namespace ProxyAPI
         }
         public IQueryable GetProxies(string region, string country)
         {
-            if (region == null && country == null)
-            {
-                var rowcount = _context.Proxies.Count();
-                var firstid = _context.Proxies.First().ID;
-                int randomid = firstid + Random.RandomNumber(rowcount);
-                return _context.Proxies.Where(proxy => proxy.ID == randomid);
-            }
-            else 
-            {
-                return  _context.Proxies
-                    .Where(proxy => (proxy.Region == region && proxy.Country == country));
-            }
-             
+           var proxies = _context.Proxies.Where(p=> string.IsNullOrEmpty(region) || p.Region == region)
+                                         .Where(p=> string.IsNullOrEmpty(country) || p.Country == country);
+           return proxies;
         }
         public void AddProxy(Proxy proxy)
         {
             if (ProxyExists(proxy.ID))
-            {
-                _context.SaveChanges();
-            }
+                _context.Update(proxy);
             else
-            {
                 _context.Proxies.Add(proxy);
-                _context.SaveChanges();
-            }
+            _context.SaveChanges();
         }
         public void UpdateProxy(Proxy proxy)
         {
@@ -60,15 +45,17 @@ namespace ProxyAPI
                 _context.SaveChanges();
             }
         }
-        public void DeleteProxy(Proxy proxy)
+        public void DeleteProxy(int id)
         {
-            _context.Remove(proxy);
+            Proxy p = GetProxy(id);
+            _context.Proxies.Remove(p);
+            _context.SaveChanges();
         }
         public void Cleardb()
         {
             foreach (var proxy in _context.Proxies)
             {
-                DeleteProxy(proxy);
+                _context.Proxies.Remove(proxy);
             }
             _context.SaveChanges();
         }
