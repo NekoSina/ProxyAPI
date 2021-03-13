@@ -1,11 +1,8 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using ProxyAPI.Models;
+using ProxyAPI.Repositories;
+using ProxyAPI.Services;
 
 namespace ProxyAPI.Controllers
 {
@@ -13,9 +10,8 @@ namespace ProxyAPI.Controllers
     [ApiController]
     public class ProxyController : ControllerBase
     {
-        //private readonly ProxyContext _context;
         private ProxyServices _services;
-        public ProxyController(ProxyContext context)
+        public ProxyController(ProxyDbContext context)
         {
             _services = new ProxyServices(new ProxyRepository(context));
         }
