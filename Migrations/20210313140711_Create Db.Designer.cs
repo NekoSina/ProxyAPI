@@ -9,7 +9,7 @@ using ProxyAPI.Models;
 namespace ProxyAPI.Migrations
 {
     [DbContext(typeof(ProxyDbContext))]
-    [Migration("20210313125045_Create Db")]
+    [Migration("20210313140711_Create Db")]
     partial class CreateDb
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -20,7 +20,7 @@ namespace ProxyAPI.Migrations
 
             modelBuilder.Entity("ProxyAPI.Models.Proxy", b =>
                 {
-                    b.Property<int>("ID")
+                    b.Property<ulong>("ID")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 

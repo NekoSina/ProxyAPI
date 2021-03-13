@@ -46,6 +46,7 @@ namespace ProxyAPI.Services
                     };
 
                     _proxyRepository.AddOrUpdateProxy(proxy);
+                    _proxyRepository.Save();
                 }
             }
             }
@@ -54,7 +55,6 @@ namespace ProxyAPI.Services
                 Console.WriteLine(e);
             }
             Console.WriteLine("Finished parsing uploaded list.");
-            _proxyRepository.Save();
             Console.WriteLine("Saving....");
         }
 

@@ -12,14 +12,7 @@ namespace ProxyAPI.Repositories
             _context = context;
         }
         private bool ProxyExists(ulong id) => _context.Proxies.Any(p => p.ID == id);
-        public Proxy GetProxy(int idx)
-        {
-            Proxy proxy = _context.Proxies.Find(idx);
-            if(proxy == null)
-                return null;
-            else 
-                return proxy;
-        }
+        public Proxy GetProxy(int idx) => _context.Proxies.Find(idx);
         public IQueryable GetProxies(string region, string country)
         {
            var proxies = _context.Proxies.Where(p=> string.IsNullOrEmpty(region) || p.Region == region)
@@ -28,8 +21,17 @@ namespace ProxyAPI.Repositories
         }
         public void AddOrUpdateProxy(Proxy proxy)
         {
+            Console.WriteLine("Adding Proxy ID: "+proxy.ID);
             if (ProxyExists(proxy.ID))
-                _context.Update(proxy);
+            {
+                var oldProxy = _context.Find<Proxy>(proxy.ID);
+                oldProxy.IP = proxy.IP;
+                oldProxy.Port = proxy.Port;
+                oldProxy.Region = proxy.Region;
+                oldProxy.Country=proxy.Country;
+                oldProxy.City = proxy.City;
+                oldProxy.LastTest = proxy.LastTest;
+            }
             else
                 _context.Proxies.Add(proxy);
         }

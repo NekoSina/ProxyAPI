@@ -18,7 +18,7 @@ namespace ProxyAPI.Migrations
 
             modelBuilder.Entity("ProxyAPI.Models.Proxy", b =>
                 {
-                    b.Property<int>("ID")
+                    b.Property<ulong>("ID")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 

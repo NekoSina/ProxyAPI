@@ -11,7 +11,7 @@ namespace ProxyAPI.Migrations
                 name: "Proxies",
                 columns: table => new
                 {
-                    ID = table.Column<int>(type: "INTEGER", nullable: false)
+                    ID = table.Column<ulong>(type: "INTEGER", nullable: false)
                         .Annotation("Sqlite:Autoincrement", true),
                     IP = table.Column<string>(type: "TEXT", nullable: true),
                     Port = table.Column<ushort>(type: "INTEGER", nullable: false),
