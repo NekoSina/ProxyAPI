@@ -5,8 +5,9 @@ using System.Net;
 using System;
 using System.Threading;
 using System.Collections.Concurrent;
+using ProxyAPI.Database;
 
-namespace ProxyAPI.Services
+namespace ProxyAPI.Logic
 {
     public static class ProxyListCruncher
     {

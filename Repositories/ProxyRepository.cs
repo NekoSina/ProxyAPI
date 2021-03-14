@@ -1,5 +1,6 @@
 using System;
 using System.Linq;
+using ProxyAPI.Database;
 using ProxyAPI.Models;
 
 namespace ProxyAPI.Repositories

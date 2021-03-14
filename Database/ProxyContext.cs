@@ -1,6 +1,7 @@
  using Microsoft.EntityFrameworkCore;
- 
- namespace ProxyAPI.Models
+using ProxyAPI.Models;
+
+namespace ProxyAPI.Database
  {
      public class ProxyDbContext : DbContext
      {

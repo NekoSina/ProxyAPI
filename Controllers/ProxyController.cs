@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using ProxyAPI.Database;
 using ProxyAPI.Models;
 using ProxyAPI.Repositories;
 using ProxyAPI.Services;
@@ -10,10 +11,10 @@ namespace ProxyAPI.Controllers
     [ApiController]
     public class ProxyController : ControllerBase
     {
-        private ProxyServices _services;
+        private ProxyService _services;
         public ProxyController(ProxyDbContext context)
         {
-            _services = new ProxyServices(new ProxyRepository(context));
+            _services = new ProxyService(new ProxyRepository(context));
         }
 
         // GET: api/Proxy

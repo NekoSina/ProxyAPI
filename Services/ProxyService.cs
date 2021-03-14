@@ -3,13 +3,14 @@ using ProxyAPI.Models;
 using Microsoft.AspNetCore.Http;
 using System.Collections.Generic;
 using ProxyAPI.Repositories;
+using ProxyAPI.Logic;
 
 namespace ProxyAPI.Services
 {
-    public class ProxyServices
+    public class ProxyService
     {
         private ProxyRepository _proxyRepository;
-        public ProxyServices(ProxyRepository repository)
+        public ProxyService(ProxyRepository repository)
         {
             _proxyRepository = repository;
         }

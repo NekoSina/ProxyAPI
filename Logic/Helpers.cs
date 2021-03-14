@@ -2,7 +2,7 @@
 using System;
 using System.Net;
 
-namespace ProxyAPI
+namespace ProxyAPI.Logic
 {
     public static class Helpers
     {
