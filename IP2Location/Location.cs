@@ -24,8 +24,6 @@ namespace ProxyAPI.IP2Location
         [Pure]
         public bool Equals(Location other)
         {
-            if (ReferenceEquals(null, other)) return false;
-            if (ReferenceEquals(this, other)) return true;
             return string.Equals(CountryCode, other.CountryCode)
                    && string.Equals(Country, other.Country)
                    && string.Equals(Region, other.Region)
@@ -36,7 +34,6 @@ namespace ProxyAPI.IP2Location
         public override bool Equals(object obj)
         {
             if (ReferenceEquals(null, obj)) return false;
-            if (ReferenceEquals(this, obj)) return true;
             return obj is Location other && Equals(other);
         }
 

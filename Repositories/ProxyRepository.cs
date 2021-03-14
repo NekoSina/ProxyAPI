@@ -5,35 +5,39 @@ using ProxyAPI.Models;
 namespace ProxyAPI.Repositories
 {
     public class ProxyRepository
-    {   
+    {
         private readonly ProxyDbContext _context;
         public ProxyRepository(ProxyDbContext context)
         {
             _context = context;
         }
-        private bool ProxyExists(ulong id) => _context.Proxies.Any(p => p.ID == id);
+        private bool TryGetProxy(ulong id, out Proxy proxy)
+        {
+            proxy = _context.Proxies.Find(id);
+            return proxy != null;
+        }
         public Proxy GetProxy(int idx) => _context.Proxies.Find(idx);
         public IQueryable GetProxies(string region, string country)
         {
-           var proxies = _context.Proxies.Where(p=> string.IsNullOrEmpty(region) || p.Region == region)
-                                         .Where(p=> string.IsNullOrEmpty(country) || p.Country == country);
-           return proxies;
+            var proxies = _context.Proxies.Where(p => string.IsNullOrEmpty(region) || p.Region == region)
+                                          .Where(p => string.IsNullOrEmpty(country) || p.Country == country);
+            return proxies;
         }
         public void AddOrUpdateProxy(Proxy proxy)
         {
-            Console.WriteLine("Adding Proxy ID: "+proxy.ID);
-            if (ProxyExists(proxy.ID))
+            if (TryGetProxy(proxy.ID, out var oldProxy))
             {
-                var oldProxy = _context.Find<Proxy>(proxy.ID);
                 oldProxy.IP = proxy.IP;
                 oldProxy.Port = proxy.Port;
                 oldProxy.Region = proxy.Region;
-                oldProxy.Country=proxy.Country;
+                oldProxy.Country = proxy.Country;
                 oldProxy.City = proxy.City;
                 oldProxy.LastTest = proxy.LastTest;
             }
             else
+            {
                 _context.Proxies.Add(proxy);
+            }
         }
         public void DeleteProxy(int id)
         {
@@ -57,6 +61,11 @@ namespace ProxyAPI.Repositories
             return _context.Proxies.First();
         }
 
-        public void Save() => _context.SaveChanges();
-    }    
+        public void Save() 
+        {
+            Console.WriteLine("Saving...");
+            _context.SaveChanges();
+            Console.WriteLine("Saved!");
+        }
+    }
 }
