@@ -49,7 +49,14 @@ namespace ProxyAPI.Services
             else
                 return false;
         }
-        public Proxy GetRandomProxy(string country, string region) => _proxyRepository.GetProxies(country, region).OrderBy(r => Guid.NewGuid()).FirstOrDefault();
+        public Proxy GetRandomProxy(string country, string region) 
+        {
+            var proxies = _proxyRepository.GetProxies(country, region);
+            var count = proxies.Count();
+
+            var idx = Helpers.Random.Next(0,count);
+            return proxies.Skip(idx).First();
+        }
         public void DeleteProxy(int id)
         {
             _proxyRepository.DeleteProxy(id);
