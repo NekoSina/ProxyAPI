@@ -1,11 +1,9 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
+using ProxyAPI.Database;
 using ProxyAPI.Models;
+using ProxyAPI.Repositories;
+using ProxyAPI.Services;
 
 namespace ProxyAPI.Controllers
 {
@@ -13,11 +11,10 @@ namespace ProxyAPI.Controllers
     [ApiController]
     public class ProxyController : ControllerBase
     {
-        //private readonly ProxyContext _context;
-        private ProxyServices _services;
-        public ProxyController(ProxyContext context)
+        private ProxyService _services;
+        public ProxyController(ProxyDbContext context)
         {
-            _services = new ProxyServices(new ProxyRepository(context));
+            _services = new ProxyService(new ProxyRepository(context));
         }
 
         // GET: api/Proxy
@@ -25,7 +22,7 @@ namespace ProxyAPI.Controllers
         [Route("/api/proxy")]
         public Proxy GetRandomProxy(string region, string country)
         {
-            return _services.GetRandomProxy(region, country);;
+            return _services.GetRandomProxy(region, country);
         }
         [HttpPost]
         [Route("/api/proxy")]
@@ -54,7 +51,7 @@ namespace ProxyAPI.Controllers
         
         [HttpDelete]
         [Route("/api/proxy")]
-        public IActionResult DeleteProxy(int id)
+        public IActionResult DeleteProxy(uint id)
         {
             _services.DeleteProxy(id);
             return Ok();
