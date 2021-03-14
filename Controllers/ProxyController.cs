@@ -51,7 +51,7 @@ namespace ProxyAPI.Controllers
         
         [HttpDelete]
         [Route("/api/proxy")]
-        public IActionResult DeleteProxy(int id)
+        public IActionResult DeleteProxy(uint id)
         {
             _services.DeleteProxy(id);
             return Ok();
