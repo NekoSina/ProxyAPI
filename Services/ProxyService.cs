@@ -41,6 +41,9 @@ namespace ProxyAPI.Services
             var proxies = _proxyRepository.GetProxies(country, region);
             var count = proxies.Count();
 
+            if(count ==0)
+                return null;
+
             var idx = Helpers.Random.Next(0,count);
             return proxies.Skip(idx).First();
         }
