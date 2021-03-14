@@ -48,10 +48,6 @@ namespace ProxyAPI.Logic
                 }
                 
                 Interlocked.Increment(ref processedLines);
-                
-                if(pendingLines.Count <2)
-                    repo.Save();
-                
                 Console.WriteLine($"Processed: {processedLines}, Pending:{pendingLines.Count}");
             }
         }

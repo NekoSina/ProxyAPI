@@ -2,20 +2,16 @@ using System.IO;
 using System.Linq;
 using ProxyAPI.Models;
 using Microsoft.AspNetCore.Http;
-using System.Collections.Generic;
 using ProxyAPI.Repositories;
 using ProxyAPI.Logic;
-using System;
 
 namespace ProxyAPI.Services
 {
     public class ProxyService
     {
         private ProxyRepository _proxyRepository;
-        public ProxyService(ProxyRepository repository)
-        {
-            _proxyRepository = repository;
-        }
+        public ProxyService(ProxyRepository repository) => _proxyRepository = repository;
+
         public void ReadFile(IFormFile file)
         {
             if (file == null)
@@ -29,17 +25,8 @@ namespace ProxyAPI.Services
                 ProxyListCruncher.Enqueue(reader.ReadLine());
         }
 
-        internal void AddProxy(Proxy proxy)
-        {
-            _proxyRepository.AddOrUpdateProxy(proxy);
-            _proxyRepository.Save();
-        }
-
-        internal void UpdateProxy(Proxy proxy)
-        {
-            _proxyRepository.AddOrUpdateProxy(proxy);
-            _proxyRepository.Save();
-        }
+        internal void AddProxy(Proxy proxy) => _proxyRepository.AddOrUpdateProxy(proxy);
+        internal void UpdateProxy(Proxy proxy) => _proxyRepository.AddOrUpdateProxy(proxy);
 
         private bool CheckFileSize(IFormFile file)
         {
@@ -60,7 +47,6 @@ namespace ProxyAPI.Services
         public void DeleteProxy(int id)
         {
             _proxyRepository.DeleteProxy(id);
-            _proxyRepository.Save();
         }
     }
 }

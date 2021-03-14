@@ -7,22 +7,15 @@ namespace ProxyAPI.Repositories
 {
     public class ProxyRepository
     {
-        private readonly ProxyDbContext _context;
-        public ProxyRepository(ProxyDbContext context)
-        {
-            _context = context;
-        }
+        private readonly ProxyDbContext db;
+        public ProxyRepository(ProxyDbContext context) => db = context;
+
         private bool TryGetProxy(ulong id, out Proxy proxy)
         {
-            proxy = _context.Proxies.Find(id);
+            proxy = db.Proxies.Find(id);
             return proxy != null;
         }
-        public Proxy GetProxy(int idx) => _context.Proxies.Find(idx);
-        public IQueryable<Proxy> GetProxies(string region, string country)
-        {
-            return _context.Proxies.Where(p => string.IsNullOrEmpty(region) || p.Region == region)
-                                   .Where(p => string.IsNullOrEmpty(country) || p.Country == country);
-        }
+        public IQueryable<Proxy> GetProxies(string region, string country) => db.Proxies.Where(p => string.IsNullOrEmpty(region) || p.Region == region).Where(p => string.IsNullOrEmpty(country) || p.Country == country);
         public void AddOrUpdateProxy(Proxy proxy)
         {
             if (TryGetProxy(proxy.ID, out var oldProxy))
@@ -33,38 +26,24 @@ namespace ProxyAPI.Repositories
                 oldProxy.Country = proxy.Country;
                 oldProxy.City = proxy.City;
                 oldProxy.LastTest = proxy.LastTest;
+                return;
             }
-            else
-            {
-                _context.Proxies.Add(proxy);
-            }
+            db.Proxies.Add(proxy);
+            Save();
         }
-        public void DeleteProxy(int id)
+        public void DeleteProxy(uint id)
         {
-            Proxy p = GetProxy(id);
-            _context.Proxies.Remove(p);
-        }
-        public void Cleardb()
-        {
-            foreach (var proxy in _context.Proxies)
-            {
-                _context.Proxies.Remove(proxy);
-            }
-            _context.SaveChanges();
-        }
-        public int GetDBLength()
-        {
-            return _context.Proxies.Count();
-        }
-        public Proxy GetFirstProxy()
-        {
-            return _context.Proxies.First();
+            if (!TryGetProxy(id, out var p))
+                return;
+
+            db.Proxies.Remove(p);
+            Save();
         }
 
-        public void Save() 
+        public void Save()
         {
             Console.WriteLine("Saving...");
-            _context.SaveChanges();
+            db.SaveChanges();
             Console.WriteLine("Saved!");
         }
     }
