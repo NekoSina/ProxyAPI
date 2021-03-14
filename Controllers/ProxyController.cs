@@ -22,7 +22,7 @@ namespace ProxyAPI.Controllers
         [Route("/api/proxy")]
         public Proxy GetRandomProxy(string region, string country)
         {
-            return _services.GetRandomProxy(region, country);;
+            return _services.GetRandomProxy(region, country);
         }
         [HttpPost]
         [Route("/api/proxy")]
