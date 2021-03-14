@@ -44,7 +44,7 @@ namespace ProxyAPI.Services
             var idx = Helpers.Random.Next(0,count);
             return proxies.Skip(idx).First();
         }
-        public void DeleteProxy(int id)
+        public void DeleteProxy(uint id)
         {
             _proxyRepository.DeleteProxy(id);
         }
