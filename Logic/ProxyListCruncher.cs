@@ -6,19 +6,22 @@ using System;
 using System.Threading;
 using System.Collections.Concurrent;
 using ProxyAPI.Database;
+using System.Collections;
 
 namespace ProxyAPI.Logic
 {
     public static class ProxyListCruncher
     {
+        private static ConcurrentDictionary<string, object> _cache = new ConcurrentDictionary<string, object>();
         private static IpLocator Locator = new BinaryDbClient("ipdb.bin");
         private static ulong processedLines = 0;
         private static BlockingCollection<string> pendingLines = new BlockingCollection<string>();
         private static Thread[] workerThreads;
+        // private static ProxyRepository repo = new ProxyRepository(new ProxyDbContext());
 
         static ProxyListCruncher()
         {
-            workerThreads = new Thread[Environment.ProcessorCount*2];
+            workerThreads = new Thread[Environment.ProcessorCount];
             for (int i = 0; i < workerThreads.Length; i++)
             {
                 workerThreads[i] = new Thread(WorkLoop);
@@ -31,22 +34,23 @@ namespace ProxyAPI.Logic
             var repo = new ProxyRepository(new ProxyDbContext());
             foreach (var line in pendingLines.GetConsumingEnumerable())
             {
-                if (CheckIfProxy(line, out var ip, out var port))
+                var parts = line.Split(':');
+                var ip = parts[0];
+                var port = ushort.Parse(parts[1]);
+
+                var location = Locator.Locate(IPAddress.Parse(ip));
+                var proxy = new Proxy
                 {
-                    var location = Locator.Locate(IPAddress.Parse(ip));
-                    var proxy = new Proxy
-                    {
-                        ID = Helpers.IpToInt(ip),
-                        IP = ip,
-                        Port = port,
-                        City = location.City,
-                        Country = location.Country,
-                        Region = location.Region
-                    };
-                    
-                    repo.AddOrUpdateProxy(proxy);
-                }
-                
+                    ID = Helpers.IpToInt(ip),
+                    IP = ip,
+                    Port = port,
+                    City = location.City,
+                    Country = location.Country,
+                    Region = location.Region
+                };
+
+                repo.AddOrUpdateProxy(proxy);
+                _cache.TryRemove(ip, out _);
                 Interlocked.Increment(ref processedLines);
                 Console.WriteLine($"Processed: {processedLines}, Pending:{pendingLines.Count}");
             }
@@ -83,6 +87,21 @@ namespace ProxyAPI.Logic
             return true;
         }
 
-        public static void Enqueue(string line) => pendingLines.Add(line);
+        public static void Enqueue(string line)
+        {
+            if (!CheckIfProxy(line, out var ip, out var port))
+            {
+                Console.WriteLine("Invalid line in list: " + line);
+                return;
+            }
+            if (_cache.ContainsKey(ip))
+            {
+                Console.WriteLine("Duplicate line in list: " + line);
+                return;
+            }
+
+            _cache.TryAdd(ip, null);
+            pendingLines.Add($"{ip}:{port}");
+        }
     }
 }
