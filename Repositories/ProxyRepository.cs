@@ -18,11 +18,10 @@ namespace ProxyAPI.Repositories
             return proxy != null;
         }
         public Proxy GetProxy(int idx) => _context.Proxies.Find(idx);
-        public IQueryable GetProxies(string region, string country)
+        public IQueryable<Proxy> GetProxies(string region, string country)
         {
-            var proxies = _context.Proxies.Where(p => string.IsNullOrEmpty(region) || p.Region == region)
-                                          .Where(p => string.IsNullOrEmpty(country) || p.Country == country);
-            return proxies;
+            return _context.Proxies.Where(p => string.IsNullOrEmpty(region) || p.Region == region)
+                                   .Where(p => string.IsNullOrEmpty(country) || p.Country == country);
         }
         public void AddOrUpdateProxy(Proxy proxy)
         {

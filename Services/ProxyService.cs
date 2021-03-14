@@ -1,9 +1,11 @@
 using System.IO;
+using System.Linq;
 using ProxyAPI.Models;
 using Microsoft.AspNetCore.Http;
 using System.Collections.Generic;
 using ProxyAPI.Repositories;
 using ProxyAPI.Logic;
+using System;
 
 namespace ProxyAPI.Services
 {
@@ -47,18 +49,7 @@ namespace ProxyAPI.Services
             else
                 return false;
         }
-        public Proxy GetRandomProxy(string country, string region)
-        {
-            var tempList = new List<Proxy>();
-            foreach (Proxy proxy in _proxyRepository.GetProxies(country, region))
-                tempList.Add(proxy);
-
-            if (tempList.Count == 0)
-                return null;
-
-            var randomNum = Helpers.Random.Next(tempList.Count);
-            return tempList[randomNum];
-        }
+        public Proxy GetRandomProxy(string country, string region) => _proxyRepository.GetProxies(country, region).OrderBy(r => Guid.NewGuid()).FirstOrDefault();
         public void DeleteProxy(int id)
         {
             _proxyRepository.DeleteProxy(id);
