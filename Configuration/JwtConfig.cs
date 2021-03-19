@@ -1,7 +1,0 @@
-namespace ProxyAPI.Configuration
-{
-    public class JwtConfig
-    {
-        public string Secret { get; set; }
-    }
-}
