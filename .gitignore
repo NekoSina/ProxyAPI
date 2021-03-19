@@ -5,7 +5,7 @@
 
 # User-specific files
 *.bin
-*.db
+*.db-*
 *.rsuser
 *.suo
 *.user
