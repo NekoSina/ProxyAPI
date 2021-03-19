@@ -18,9 +18,9 @@ namespace ProxyAPI.Logic
 
         static ProxyListCruncher()
         {
-            IpQuery.Open("ipdb.bin",true);
+            IpQuery.Open("Assets/ipdb.bin",true);
             IpQuery.LoadBIN();
-            ProxyQuery.Open("proxydb.bin", IP2Proxy.Component.IOModes.IP2PROXY_MEMORY_MAPPED);
+            ProxyQuery.Open("Assets/proxydb.bin", IP2Proxy.Component.IOModes.IP2PROXY_MEMORY_MAPPED);
             workerThreads = new Thread[Environment.ProcessorCount];
             for (int i = 0; i < workerThreads.Length; i++)
             {
@@ -82,15 +82,16 @@ namespace ProxyAPI.Logic
 
                 foreach(var m in proxy.GetType().GetProperties())
                 {
-                    if(m.PropertyType == typeof(String))
-                    {
-                        var val =(string)m.GetValue(proxy);
-                        if(val== "-")
-                        {   
-                            m.SetValue(proxy, string.Empty);
-                            val =(string)m.GetValue(proxy);
-                        }
-                    }
+                    if(m.PropertyType != typeof(String))
+                        continue;
+
+                    var val =(string)m.GetValue(proxy);
+                    
+                    if(val != "-")
+                        continue;
+
+                    m.SetValue(proxy, string.Empty);
+                    val =(string)m.GetValue(proxy);
                 }
                 
                 repo.AddOrUpdateProxy(proxy);
