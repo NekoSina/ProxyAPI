@@ -11,6 +11,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using System.Text;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.AspNetCore.Identity;
+using AspNetCoreRateLimit;
 
 namespace ProxyAPI
 {
@@ -25,9 +26,13 @@ namespace ProxyAPI
         public void ConfigureServices(IServiceCollection services)
         {
             services.Configure<JwtConfig>(Configuration.GetSection("JwtConfig"));
+            services.Configure<IpRateLimitOptions>(Configuration.GetSection("IpRateLimiting"));
             services.AddDbContext<ProxyDbContext>(opt => opt.UseSqlite("Data Source=Proxy.db"));
             services.AddControllers();
-
+            services.AddMemoryCache();
+            services.AddSingleton<IIpPolicyStore, MemoryCacheIpPolicyStore>();
+            services.AddSingleton<IRateLimitCounterStore, MemoryCacheRateLimitCounterStore>();
+            services.AddSingleton<IRateLimitConfiguration, RateLimitConfiguration>();
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "ProxyAPI", Version = "v1" });
@@ -93,6 +98,7 @@ namespace ProxyAPI
 
             app.UseHttpsRedirection();
             app.UseRouting();
+            app.UseIpRateLimiting();
             app.UseAuthentication();
             app.UseAuthorization();
             app.UseEndpoints(endpoints => endpoints.MapControllers());
