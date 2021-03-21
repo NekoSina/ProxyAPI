@@ -14,16 +14,20 @@ namespace ProxyTester
         public async Task<bool> Test(Proxy proxy, TimeSpan timeout)
         {
             proxy.LastTest = DateTime.UtcNow;
+
+            var webProxy = new WebProxy(proxy.IP.ToString(), proxy.Port);
+            var request = (HttpWebRequest)WebRequest.Create(TEST_TARGET);
+            request.Proxy = webProxy;
+            request.Timeout = (int)timeout.TotalMilliseconds;
+
             try
             {
-                var webProxy = new WebProxy(proxy.IP.ToString(), proxy.Port);
-                var request = (HttpWebRequest)WebRequest.Create(TEST_TARGET);
-                request.Proxy = webProxy;
-                request.Timeout = (int)timeout.TotalMilliseconds;
                 var resp = await request.GetResponseAsync();
                 var reader = new StreamReader(resp.GetResponseStream());
                 var html = await reader.ReadToEndAsync();
-                proxy.Working = html.Trim() == _responseWithoutProxy;
+
+                proxy.Working = (html.Trim() == _responseWithoutProxy);
+                
                 if (proxy.Working)
                     proxy.Score += 3;
             }

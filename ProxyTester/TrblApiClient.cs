@@ -27,8 +27,9 @@ namespace ProxyTester
             var content = new StringContent(JsonSerializer.Serialize(creds), Encoding.UTF8, "application/json");
             var response = await httpClient.PostAsync($"{ENDPOINT}/Token", content);
             var token = await response.Content.ReadAsStringAsync();
+
             httpClient.DefaultRequestHeaders.Add("Authorization", "Bearer " + token);
-            return response.StatusCode == HttpStatusCode.OK && !string.IsNullOrEmpty(token);
+            return response.StatusCode == HttpStatusCode.OK;
         }
 
         public async Task<bool> UploadProxyList(string path)
