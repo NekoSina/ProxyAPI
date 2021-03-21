@@ -1,0 +1,10 @@
+{
+  "version": 2,
+  "dgSpecHash": "vlYKLKSahZ5fve1boA3swv9u1+H6XdCgMPWYoi5dGVWBIbQ8j2lJWV+tqYlou3X9W0sG0S9Ft+U2AAXx4rOwDg==",
+  "success": true,
+  "projectFilePath": "/home/alu/coding/ProxyAPI/ProxyTester/ProxyTester.csproj",
+  "expectedPackageFiles": [
+    "/home/alu/.nuget/packages/microsoft.aspnetcore.app.ref/5.0.0/microsoft.aspnetcore.app.ref.5.0.0.nupkg.sha512"
+  ],
+  "logs": []
+}
