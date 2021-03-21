@@ -37,9 +37,9 @@ namespace ProxyAPI.Services
             else
                 return false;
         }
-        public IEnumerable<Proxy> GetProxies(string country, string region,int hoursSinceTest) 
+        public IEnumerable<Proxy> GetProxies(string country, string region,int hoursSinceTest,int score) 
         {
-            return _proxyRepository.GetProxies(country, region,hoursSinceTest);
+            return _proxyRepository.GetProxies(country, region,hoursSinceTest,score);
             // var count = proxies.Count();
 
             // if(count ==0)

@@ -1,5 +1,7 @@
+using System.IO;
 using System.Net;
 using System.Net.Http;
+using System.Net.Http.Headers;
 using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
@@ -28,9 +30,19 @@ namespace ProxyTester
             httpClient.DefaultRequestHeaders.Add("Authorization", "Bearer " + token);
             return response.StatusCode == HttpStatusCode.OK && !string.IsNullOrEmpty(token);
         }
+
+        public async Task<bool> UploadProxyList(string path)
+        {
+            using var form = new MultipartFormDataContent();
+            using var fileContent = new ByteArrayContent(await File.ReadAllBytesAsync(path));
+            fileContent.Headers.ContentType = MediaTypeHeaderValue.Parse("multipart/form-data");
+            form.Add(fileContent, "file", Path.GetFileName(path));
+            var response = await httpClient.PostAsync($"{ENDPOINT}/proxy", form);
+            return response.StatusCode == HttpStatusCode.OK;
+        }
         public async Task<Proxy[]> GetProxiesAsync()
         {
-            var json = await httpClient.GetStringAsync($"{ENDPOINT}/proxy");
+            var json = await httpClient.GetStringAsync($"{ENDPOINT}/proxy?score=0");
             var proxies = JsonSerializer.Deserialize<Proxy[]>(json, serializerOptions);
             return proxies;
         }

@@ -24,6 +24,8 @@ namespace ProxyAPI.Models
         public DateTime LastSeen { get; set; }
         public string ProxyType { get; set; }
         public string Threat { get; set; }
+        public int Score {get;set;}
+        public bool Working {get;set;}
 
         public override string ToString() => $"{IP}:{Port} - {Region}, {Country}, {City}";
     }

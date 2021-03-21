@@ -15,22 +15,21 @@ namespace ProxyAPI.Repositories
             proxy = db.Proxies.Find(id);
             return proxy != null;
         }
-        public IQueryable<Proxy> GetProxies(string region, string country, int hoursSinceTest) 
+        public IQueryable<Proxy> GetProxies(string region, string country, int hoursSinceTest, int score) 
         {
             return db.Proxies.Where(p => string.IsNullOrEmpty(region) || p.Region == region)
                        .Where(p => string.IsNullOrEmpty(country) || p.Country == country)
-                       .Where(p=> hoursSinceTest == 0 || p.LastTest.AddHours(hoursSinceTest) > DateTime.UtcNow);
+                       .Where(p=> hoursSinceTest == 0 || p.LastTest.AddHours(hoursSinceTest) > DateTime.UtcNow)
+                       .Where(p=> score == int.MinValue || p.Score == score);
         }
         public void AddOrUpdateProxy(Proxy proxy)
         {
             if (TryGetProxy(proxy.ID, out var oldProxy))
             {
-                oldProxy.IP = proxy.IP;
-                oldProxy.Port = proxy.Port;
-                oldProxy.Region = proxy.Region;
-                oldProxy.Country = proxy.Country;
-                oldProxy.City = proxy.City;
-                oldProxy.LastTest = proxy.LastTest;
+                oldProxy.Score = proxy.Score;
+                oldProxy.Working = proxy.Working;
+                oldProxy.LastSeen = proxy.LastSeen;
+                oldProxy.LastTest=proxy.LastTest;
                 Save();
                 return;
             }

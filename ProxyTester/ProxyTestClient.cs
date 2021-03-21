@@ -14,7 +14,6 @@ namespace ProxyTester
         public async Task<bool> Test(Proxy proxy, TimeSpan timeout)
         {
             proxy.LastTest = DateTime.UtcNow;
-            var working = false;
             try
             {
                 var webProxy = new WebProxy(proxy.IP.ToString(), proxy.Port);
@@ -24,14 +23,17 @@ namespace ProxyTester
                 var resp = await request.GetResponseAsync();
                 var reader = new StreamReader(resp.GetResponseStream());
                 var html = await reader.ReadToEndAsync();
-
-                return html.Trim() == _responseWithoutProxy;
+                proxy.Working = html.Trim() == _responseWithoutProxy;
+                if (proxy.Working)
+                    proxy.Score += 3;
             }
             catch (Exception e)
             {
+                proxy.Score--;
+                proxy.Working = false;
                 Console.WriteLine($"[{proxy.Id}] {e.Message}");
             }
-            return working;
+            return proxy.Working;
         }
     }
 }

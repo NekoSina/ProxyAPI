@@ -11,7 +11,7 @@ namespace ProxyAPI.Services
         public bool TryAuthenticate(string user, string pass, out UserInfo userInfo)
         {
             userInfo = _userRepository.GetUser(user, pass);
-            return user != null;
+            return userInfo != null;
         }
     }
 }
