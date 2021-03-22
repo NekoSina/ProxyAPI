@@ -1,8 +1,7 @@
 ﻿using System;
-using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Threading;
 using System.Threading.Tasks;
-using ProxyTester.Models;
 
 namespace ProxyTester
 {
@@ -15,42 +14,45 @@ namespace ProxyTester
             var prxyClient = new ProxyTestClient();
             var trblClient = new TrblApiClient();
 
-            if (await trblClient.Login(USER, PASS))
+            if (await trblClient.LoginAsync(USER, PASS))
             {
                 Console.WriteLine($"Logged in as {USER}!");
 
-                //if(await trblClient.UploadProxyList("/home/alu/hugelist.txt"))
+                //if(await trblClient.UploadProxyList("/home/alu/thelist.txt"))
                 //    Console.WriteLine("Uploaded!");
-
-                var proxies = await trblClient.GetProxiesAsync();
-                var bc = new BlockingCollection<Proxy>();
-
-                foreach (var proxy in proxies)
-                    bc.Add(proxy);
-
-                var taskList = new List<Task>();
-                for (int i = 0; i < Environment.ProcessorCount * 2; i++)
+                while (true)
                 {
-                    var task = Task.Run(async () =>
+                    var threadCount = Environment.ProcessorCount*8;
+                    var taskList = new List<Task>();
+                    var proxies = await trblClient.GetProxiesAsync();
+                    var current = 0;
+                    var total = proxies.Count;
+                    Console.WriteLine($"Got {total} proxies to test, starting work on {threadCount} threads...");
+                    Thread.Sleep(3000);
+                    for (int i = 0; i < threadCount; i++)
                     {
-                        foreach (var proxy in bc.GetConsumingEnumerable())
+                        var task = Task.Run(async () =>
                         {
-                            await prxyClient.Test(proxy, TimeSpan.FromSeconds(3));
-                            await trblClient.UpdateProxy(proxy);
+                            foreach (var proxy in proxies.GetConsumingEnumerable())
+                            {
+                                Console.Title = $"Working on Proxy [{proxy.Id}] - {proxy.IP}:{proxy.Port} ({current}/{total})";
+                                Interlocked.Increment(ref current);
+                                await prxyClient.TestAsync(proxy, TimeSpan.FromSeconds(30));
+                                await trblClient.UpdateProxyAsync(proxy);
 
-                            if (proxy.Score < -100 && !proxy.Working)
-                                if (await trblClient.DeleteProxy(proxy))
-                                    Console.WriteLine($"Deleted {proxy.Id} because Score was {proxy.Score}");
+                                if (proxy.Score < -100 && !proxy.Working)
+                                    if (await trblClient.DeleteProxyAsync(proxy))
+                                        Console.WriteLine($"Deleted {proxy.Id} because Score was {proxy.Score}");
 
-                            if (bc.Count == 0)
-                                break;
-                        }
-                    });
-                    
-                    taskList.Add(task);
+                                if (proxies.Count == 0)
+                                    break;
+                            }
+                        });
+
+                        taskList.Add(task);
+                    }
+                    await Task.WhenAll(taskList);
                 }
-                await Task.WhenAll(taskList);
-                Console.WriteLine("Proxies: " + proxies.Length);
             }
         }
     }

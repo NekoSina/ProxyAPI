@@ -15,12 +15,12 @@ namespace ProxyAPI.Repositories
             proxy = db.Proxies.Find(id);
             return proxy != null;
         }
-        public IQueryable<Proxy> GetProxies(string region, string country, int hoursSinceTest, int score) 
+        public IQueryable<Proxy> GetProxies(string region, string country, int hoursSinceTest, int score)
         {
             return db.Proxies.Where(p => string.IsNullOrEmpty(region) || p.Region == region)
                        .Where(p => string.IsNullOrEmpty(country) || p.Country == country)
-                       .Where(p=> hoursSinceTest == 0 || p.LastTest.AddHours(hoursSinceTest) > DateTime.UtcNow)
-                       .Where(p=> score == int.MinValue || p.Score == score);
+                       .Where(p => hoursSinceTest == 0 || p.LastTest.AddHours(hoursSinceTest) > DateTime.UtcNow)
+                       .Where(p => score == int.MinValue || p.Score == score);
         }
         public void AddOrUpdateProxy(Proxy proxy)
         {
@@ -28,13 +28,19 @@ namespace ProxyAPI.Repositories
             {
                 oldProxy.Score = proxy.Score;
                 oldProxy.Working = proxy.Working;
-                oldProxy.LastSeen = proxy.LastSeen;
-                oldProxy.LastTest=proxy.LastTest;
+                oldProxy.LastTest = proxy.LastTest;
                 Save();
                 return;
             }
             db.Proxies.Add(proxy);
             Save();
+        }
+        public bool TryAddProxy(Proxy proxy)
+        {
+            if (TryGetProxy(proxy.ID, out var oldProxy))
+                return false;
+            db.Proxies.Add(proxy);
+            Save(); return true;
         }
         public void DeleteProxy(uint id)
         {

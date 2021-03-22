@@ -11,7 +11,7 @@ namespace ProxyTester
         private const string TEST_TARGET = "https://her.st/";
         private static string _responseWithoutProxy = new WebClient().DownloadString(TEST_TARGET).Trim();
 
-        public async Task<bool> Test(Proxy proxy, TimeSpan timeout)
+        public async Task<bool> TestAsync(Proxy proxy, TimeSpan timeout)
         {
             proxy.LastTest = DateTime.UtcNow;
 

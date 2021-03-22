@@ -1,5 +1,4 @@
 using System.ComponentModel.DataAnnotations;
-using Microsoft.EntityFrameworkCore;
 using System;
 namespace ProxyAPI.Models
 {
@@ -21,7 +20,6 @@ namespace ProxyAPI.Models
         public string Domain { get; set; }
         public string ISP { get; set; }
         public bool KnownAsProxy => !string.IsNullOrEmpty(AS);
-        public DateTime LastSeen { get; set; }
         public string ProxyType { get; set; }
         public string Threat { get; set; }
         public int Score {get;set;}

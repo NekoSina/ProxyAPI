@@ -1,3 +1,4 @@
+using System.Collections.Concurrent;
 using System.IO;
 using System.Net;
 using System.Net.Http;
@@ -21,7 +22,7 @@ namespace ProxyTester
             serializerOptions = new JsonSerializerOptions { PropertyNameCaseInsensitive = true, };
         }
 
-        public async Task<bool> Login(string user, string pass)
+        public async Task<bool> LoginAsync(string user, string pass)
         {
             var creds = new UserInfo { Username = "trbl", Password = "herst" };
             using var content = new StringContent(JsonSerializer.Serialize(creds), Encoding.UTF8, "application/json");
@@ -41,19 +42,24 @@ namespace ProxyTester
             var response = await httpClient.PostAsync($"{ENDPOINT}/proxy", form);
             return response.StatusCode == HttpStatusCode.OK;
         }
-        public async Task<Proxy[]> GetProxiesAsync()
+        public async Task<BlockingCollection<Proxy>> GetProxiesAsync()
         {
-            var json = await httpClient.GetStringAsync($"{ENDPOINT}/proxy?score=0");
+            var json = await httpClient.GetStringAsync($"{ENDPOINT}/proxy?score={int.MinValue}");
             var proxies = JsonSerializer.Deserialize<Proxy[]>(json, serializerOptions);
-            return proxies;
+            var bc = new BlockingCollection<Proxy>();
+            
+            foreach (var proxy in proxies)
+                bc.Add(proxy);
+            
+            return bc;
         }
-        public async Task<bool> UpdateProxy(Proxy proxy)
+        public async Task<bool> UpdateProxyAsync(Proxy proxy)
         {
             using var content = new StringContent(JsonSerializer.Serialize(proxy), Encoding.UTF8, "application/json");
             var putResponse = await httpClient.PatchAsync($"{ENDPOINT}/proxy", content);
             return putResponse.StatusCode == HttpStatusCode.OK;
         }
-        public async Task<bool> DeleteProxy(Proxy proxy)
+        public async Task<bool> DeleteProxyAsync(Proxy proxy)
         {
             var response = await httpClient.DeleteAsync($"{ENDPOINT}/proxy?id=" + proxy.Id);
             return response.StatusCode == HttpStatusCode.OK;

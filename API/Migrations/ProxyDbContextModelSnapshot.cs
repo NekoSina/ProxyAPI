@@ -43,9 +43,6 @@ namespace ProxyAPI.Migrations
                     b.Property<string>("ISP")
                         .HasColumnType("TEXT");
 
-                    b.Property<DateTime>("LastSeen")
-                        .HasColumnType("TEXT");
-
                     b.Property<DateTime>("LastTest")
                         .HasColumnType("TEXT");
 

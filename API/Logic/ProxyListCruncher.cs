@@ -34,6 +34,8 @@ namespace ProxyAPI.Logic
             var repo = new ProxyRepository(new ProxyDbContext());
             foreach (var line in pendingLines.GetConsumingEnumerable())
             {
+                try
+                {
                 var parts = line.Split(':');
                 var ip = parts[0];
                 var port = ushort.Parse(parts[1]);
@@ -75,7 +77,6 @@ namespace ProxyAPI.Logic
                     ASN = proxyResult.ASN,
                     Domain = proxyResult.Domain,
                     ISP = proxyResult.ISP,
-                    LastSeen = lastSeen,
                     Threat = proxyResult.Threat,
                     ProxyType = proxyResult.Usage_Type
                 };
@@ -94,10 +95,15 @@ namespace ProxyAPI.Logic
                     val =(string)m.GetValue(proxy);
                 }
                 
-                repo.AddOrUpdateProxy(proxy);
+                repo.TryAddProxy(proxy);
                 _cache.TryRemove(ip, out _);
                 Interlocked.Increment(ref processedLines);
                 Console.WriteLine($"Processed: {processedLines}, Pending:{pendingLines.Count}");
+            }
+            catch (Exception e)
+            {
+                
+            }
             }
         }
         private static bool CheckIfProxy(string proxy, out string ip, out ushort port)
