@@ -1,16 +1,17 @@
-using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
-using ProxyAPI.Models;
+using HerstAPI.Models;
 
-namespace ProxyAPI.Database
- {
-     public class ProxyDbContext : DbContext
+namespace HerstAPI.Database
+{
+    public class HerstDbContext : DbContext
      {
-        protected override void OnConfiguring(DbContextOptionsBuilder options) => options.UseSqlite("Data Source=Proxy.db");
-        public ProxyDbContext(DbContextOptions<ProxyDbContext> options) : base(options) { }
-        internal ProxyDbContext(){}
         public DbSet<Proxy> Proxies { get; set; }
         public DbSet<UserInfo> Users { get; set; }
+        public DbSet<WiFiProbe> WiFiProbes { get; set; }
+        
+        internal HerstDbContext(){}
+        public HerstDbContext(DbContextOptions<HerstDbContext> options) : base(options) { }
+        protected override void OnConfiguring(DbContextOptionsBuilder options) => options.UseSqlite(Startup.ConnectionString);
      }
  }
  

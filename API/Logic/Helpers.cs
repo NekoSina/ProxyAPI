@@ -2,7 +2,7 @@
 using System;
 using System.Net;
 
-namespace ProxyAPI.Logic
+namespace HerstAPI.Logic
 {
     public static class Helpers
     {

@@ -1,7 +1,7 @@
-using ProxyAPI.Models;
-using ProxyAPI.Repositories;
+using HerstAPI.Models;
+using HerstAPI.Repositories;
 
-namespace ProxyAPI.Services
+namespace HerstAPI.Services
 {
     public class TokenService
     {

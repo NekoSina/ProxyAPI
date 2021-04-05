@@ -1,5 +1,5 @@
 using System.ComponentModel.DataAnnotations;
-namespace ProxyAPI.Models
+namespace HerstAPI.Models
 {
     public class UserInfo
     {

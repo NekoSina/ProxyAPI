@@ -4,11 +4,11 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
-using ProxyAPI.Database;
+using HerstAPI.Database;
 
-namespace ProxyAPI.Migrations
+namespace HerstAPI.Migrations
 {
-    [DbContext(typeof(ProxyDbContext))]
+    [DbContext(typeof(HerstDbContext))]
     [Migration("20210322064640_remove LastSeen")]
     partial class removeLastSeen
     {

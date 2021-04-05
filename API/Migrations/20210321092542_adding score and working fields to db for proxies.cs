@@ -1,7 +1,7 @@
 ﻿using System;
 using Microsoft.EntityFrameworkCore.Migrations;
 
-namespace ProxyAPI.Migrations
+namespace HerstAPI.Migrations
 {
     public partial class addingscoreandworkingfieldstodbforproxies : Migration
     {

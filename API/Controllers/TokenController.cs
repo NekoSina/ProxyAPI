@@ -7,12 +7,12 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
-using ProxyAPI.Database;
-using ProxyAPI.Models;
-using ProxyAPI.Repositories;
-using ProxyAPI.Services;
+using HerstAPI.Database;
+using HerstAPI.Models;
+using HerstAPI.Repositories;
+using HerstAPI.Services;
 
-namespace ProxyAPI.Controllers
+namespace HerstAPI.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
@@ -24,7 +24,7 @@ namespace ProxyAPI.Controllers
         public TokenController(IConfiguration config)
         {
             _configuration = config;
-            _tokenService = new TokenService(new UserRepository(new ProxyDbContext()));
+            _tokenService = new TokenService(new UserRepository(new HerstDbContext()));
         }
 
         [HttpPost]

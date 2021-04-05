@@ -1,6 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 using System;
-namespace ProxyAPI.Models
+namespace HerstAPI.Models
 {
     public class Proxy
     {

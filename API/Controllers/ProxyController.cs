@@ -4,12 +4,12 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using ProxyAPI.Database;
-using ProxyAPI.Models;
-using ProxyAPI.Repositories;
-using ProxyAPI.Services;
+using HerstAPI.Database;
+using HerstAPI.Models;
+using HerstAPI.Repositories;
+using HerstAPI.Services;
 
-namespace ProxyAPI.Controllers
+namespace HerstAPI.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
@@ -17,15 +17,14 @@ namespace ProxyAPI.Controllers
     public class ProxyController : ControllerBase
     {
         private ProxyService _services;
-        public ProxyController(ProxyDbContext context)
+        public ProxyController(HerstDbContext context)
         {
             _services = new ProxyService(new ProxyRepository(context));
         }
 
-        // GET: api/Proxy
         [HttpGet]
         [Route("/api/proxy")]
-        public IEnumerable<Proxy> GetRandomProxy(string region, string country, int hoursSinceTest,int score)
+        public IEnumerable<Proxy> GetProxies(string region, string country, int hoursSinceTest,int score)
         {
             var proxies = _services.GetProxies(region, country,hoursSinceTest,score);
 

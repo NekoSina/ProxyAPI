@@ -1,11 +1,11 @@
-using ProxyAPI.Models;
-using ProxyAPI.Repositories;
+using HerstAPI.Models;
+using HerstAPI.Repositories;
 using System;
 using System.Threading;
 using System.Collections.Concurrent;
-using ProxyAPI.Database;
+using HerstAPI.Database;
 
-namespace ProxyAPI.Logic
+namespace HerstAPI.Logic
 {
     public static class ProxyListCruncher
     {
@@ -31,7 +31,7 @@ namespace ProxyAPI.Logic
 
         private static void WorkLoop()
         {
-            var repo = new ProxyRepository(new ProxyDbContext());
+            var repo = new ProxyRepository(new HerstDbContext());
             foreach (var line in pendingLines.GetConsumingEnumerable())
             {
                 try

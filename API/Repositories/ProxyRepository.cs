@@ -1,26 +1,24 @@
 using System;
 using System.Linq;
-using ProxyAPI.Database;
-using ProxyAPI.Models;
+using HerstAPI.Database;
+using HerstAPI.Models;
 
-namespace ProxyAPI.Repositories
+namespace HerstAPI.Repositories
 {
     public class ProxyRepository
     {
-        private readonly ProxyDbContext db;
-        public ProxyRepository(ProxyDbContext context) => db = context;
+        private readonly HerstDbContext db;
+        public ProxyRepository(HerstDbContext context) => db = context;
 
         private bool TryGetProxy(ulong id, out Proxy proxy)
         {
             proxy = db.Proxies.Find(id);
             return proxy != null;
         }
-        public IQueryable<Proxy> GetProxies(string region, string country, int hoursSinceTest, int score)
+        public IQueryable<Proxy> GetProxies(string region, string country)
         {
             return db.Proxies.Where(p => string.IsNullOrEmpty(region) || p.Region == region)
-                       .Where(p => string.IsNullOrEmpty(country) || p.Country == country)
-                       .Where(p => hoursSinceTest == 0 || p.LastTest.AddHours(hoursSinceTest) > DateTime.UtcNow)
-                       .Where(p => score == int.MinValue || p.Score == score);
+                             .Where(p => string.IsNullOrEmpty(country) || p.Country == country);
         }
         public void AddOrUpdateProxy(Proxy proxy)
         {

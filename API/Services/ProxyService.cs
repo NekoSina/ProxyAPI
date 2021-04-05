@@ -1,12 +1,13 @@
 using System.IO;
 using System.Linq;
-using ProxyAPI.Models;
+using HerstAPI.Models;
 using Microsoft.AspNetCore.Http;
-using ProxyAPI.Repositories;
-using ProxyAPI.Logic;
+using HerstAPI.Repositories;
+using HerstAPI.Logic;
 using System.Collections.Generic;
+using System;
 
-namespace ProxyAPI.Services
+namespace HerstAPI.Services
 {
     public class ProxyService
     {
@@ -39,14 +40,9 @@ namespace ProxyAPI.Services
         }
         public IEnumerable<Proxy> GetProxies(string country, string region,int hoursSinceTest,int score) 
         {
-            return _proxyRepository.GetProxies(country, region,hoursSinceTest,score);
-            // var count = proxies.Count();
-
-            // if(count ==0)
-            //     return null;
-
-            // var idx = Helpers.Random.Next(0,count);
-            // return proxies.Skip(idx).First();
+            return _proxyRepository.GetProxies(country, region)
+                       .Where(p => hoursSinceTest == 0 || p.LastTest.AddHours(hoursSinceTest) > DateTime.UtcNow)
+                       .Where(p => score == 0 || p.Score == score);;
         }
         public void DeleteProxy(uint id)
         {
