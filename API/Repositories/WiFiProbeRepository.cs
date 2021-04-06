@@ -18,24 +18,27 @@ namespace HerstAPI.Repositories
 
         internal void AddProbe(string mac, string ssid)
         {
-            var old = db.WiFiMacs.FirstOrDefault(w => w.MAC == mac);
-            if (old == null)
-                old = new WiFiMac { MAC = mac };
+            var client = GetOrCreateClient(mac);
 
-            var probe = db.WiFiProbes.FirstOrDefault(p => p.WiFiMac == old);
-            if (probe != null)
-                probe.LastSeen = DateTime.UtcNow;
-            else
+            var probe = db.WiFiProbes.FirstOrDefault(p => p.WiFiMac == client.WiFiMac);
+            if (probe == null)
             {
-                db.WiFiProbes.Add(new WiFiProbe 
-                { 
-                    WiFiMac = new WiFiMac { MAC = mac },
-                    WiFiNetworkName = new WiFiNetworkName { SSID = ssid }, 
-                    LastSeen = DateTime.Now 
+                db.WiFiProbes.Add(new WiFiProbe
+                {
+                    WiFiMac = GetOrCreateMac(mac),
+                    WiFiNetworkName = GetOrCreateNetworkName(ssid),
+                    LastSeen = DateTime.Now
                 });
             }
+            else
+                probe.LastSeen = DateTime.UtcNow;
+
             Save();
         }
+
+        private WiFiClient GetOrCreateClient(string mac) => db.WiFiClients.FirstOrDefault(w => w.WiFiMac.MAC == mac) ?? new WiFiClient { WiFiMac = GetOrCreateMac(mac) };
+        private WiFiMac GetOrCreateMac(string mac) => db.WiFiMacs.FirstOrDefault(w => w.MAC == mac) ?? new WiFiMac { MAC = mac };
+        private WiFiNetworkName GetOrCreateNetworkName(string ssid) => db.WiFiNetworkNames.FirstOrDefault(n => n.SSID == ssid) ?? new WiFiNetworkName { SSID = ssid };
 
         internal void Save() => db.SaveChanges();
     }
