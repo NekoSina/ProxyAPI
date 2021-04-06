@@ -7,7 +7,11 @@ namespace HerstAPI.Database
      {
         public DbSet<Proxy> Proxies { get; set; }
         public DbSet<UserInfo> Users { get; set; }
+        public DbSet<WiFiClient> WiFiClients { get; set; }
+        public DbSet<WiFiMac> WiFiMacs { get; set; }
         public DbSet<WiFiProbe> WiFiProbes { get; set; }
+        public DbSet<WiFiAccessPoint> WiFiAccessPoints { get; set; }
+        public DbSet<WiFiNetworkName> WiFiNetworkNames { get; set; }
         
         internal HerstDbContext(){}
         public HerstDbContext(DbContextOptions<HerstDbContext> options) : base(options) { }

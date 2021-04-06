@@ -12,17 +12,29 @@ namespace HerstAPI.Repositories
 
         public IQueryable<WiFiProbe> GetProbes(string mac, string ssid)
         {
-            return db.WiFiProbes.Where(p => string.IsNullOrEmpty(mac) || p.MAC == mac)
-                                .Where(p => string.IsNullOrEmpty(ssid) || p.SSID == ssid);
+            return db.WiFiProbes.Where(p => string.IsNullOrEmpty(mac) || p.WiFiMac.MAC == mac)
+                                .Where(p => string.IsNullOrEmpty(ssid) || p.WiFiNetworkName.SSID == ssid);
         }
 
         internal void AddProbe(string mac, string ssid)
         {
-            var old = db.WiFiProbes.Find(mac);
-            if(old != null)
-                old.LastSeen = DateTime.Now;
+            var old = db.WiFiMacs.FirstOrDefault(w => w.MAC == mac);
+            if (old == null)
+                old = new WiFiMac { MAC = mac };
+
+            var probe = db.WiFiProbes.FirstOrDefault(p => p.WiFiMac == old);
+            if (probe != null)
+                probe.LastSeen = DateTime.UtcNow;
             else
-                db.WiFiProbes.Add(new WiFiProbe{ MAC = mac,SSID =ssid, LastSeen = DateTime.Now} );
+            {
+                db.WiFiProbes.Add(new WiFiProbe 
+                { 
+                    WiFiMac = new WiFiMac { MAC = mac },
+                    WiFiNetworkName = new WiFiNetworkName { SSID = ssid }, 
+                    LastSeen = DateTime.Now 
+                });
+            }
+            Save();
         }
 
         internal void Save() => db.SaveChanges();
