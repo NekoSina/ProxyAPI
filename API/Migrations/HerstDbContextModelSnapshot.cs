@@ -165,6 +165,9 @@ namespace ProxyAPI.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
+                    b.Property<ulong?>("ClientWiFiClientId")
+                        .HasColumnType("INTEGER");
+
                     b.Property<DateTime>("LastSeen")
                         .HasColumnType("TEXT");
 
@@ -175,6 +178,8 @@ namespace ProxyAPI.Migrations
                         .HasColumnType("INTEGER");
 
                     b.HasKey("WiFiProbeId");
+
+                    b.HasIndex("ClientWiFiClientId");
 
                     b.HasIndex("WiFiMacId");
 
@@ -224,6 +229,10 @@ namespace ProxyAPI.Migrations
 
             modelBuilder.Entity("HerstAPI.Models.WiFiProbe", b =>
                 {
+                    b.HasOne("HerstAPI.Models.WiFiClient", "Client")
+                        .WithMany()
+                        .HasForeignKey("ClientWiFiClientId");
+
                     b.HasOne("HerstAPI.Models.WiFiMac", "WiFiMac")
                         .WithMany()
                         .HasForeignKey("WiFiMacId");
@@ -231,6 +240,8 @@ namespace ProxyAPI.Migrations
                     b.HasOne("HerstAPI.Models.WiFiNetworkName", "WiFiNetworkName")
                         .WithMany()
                         .HasForeignKey("WiFiNetworkNameId");
+
+                    b.Navigation("Client");
 
                     b.Navigation("WiFiMac");
 

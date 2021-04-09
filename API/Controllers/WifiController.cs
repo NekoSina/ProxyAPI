@@ -7,29 +7,31 @@ using HerstAPI.Database;
 using HerstAPI.Models;
 using HerstAPI.Repositories;
 using HerstAPI.Services;
+using Microsoft.Extensions.Logging;
+using System.Diagnostics;
 
 namespace HerstAPI.Controllers
 {
-    [Route("api/[controller]")]
     [ApiController]
     //[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
-    public class WiFiProbeController : ControllerBase
+    public class WiFiController : ControllerBase
     {
-        private WiFiProbeService _service;
-        public WiFiProbeController(HerstDbContext context)
+        private WiFiService _service;
+        private ILogger<WiFiController> _logger;
+        public WiFiController(HerstDbContext context)
         {
-            _service = new WiFiProbeService(new WiFiProbeRepository(context));
+            _service = new WiFiService(new WiFiRepository(context));
         }
 
         [HttpGet]
-        [Route("/api/probe")]
+        [Route("/api/wifi/probe")]
         public IEnumerable<WiFiProbe> GetProbe(string mac, string ssid)
         {
             foreach(var probe in _service.GetProbes(mac, ssid))
                 yield return probe;
         }
         [HttpPost]
-        [Route("/api/probe")]
+        [Route("/api/wifi/probe")]
         public IActionResult UploadFile(IFormFile file)
         {
             _service.ReadFile(file);
@@ -37,21 +39,23 @@ namespace HerstAPI.Controllers
             return Ok();
         }
 
-        // [HttpPatch]
-        // [Route("/api/proxy")]
-        // public IActionResult UpdateProxy([FromBody] Proxy proxy)
-        // {
-        //     _services.UpdateProxy(proxy);
-        //     return Ok();
-        // }
-
-        // [HttpPut]
-        // [Route("/api/proxy")]
-        // public IActionResult AddProxy([FromBody] Proxy proxy)
-        // {
-        //     _services.AddProxy(proxy);
-        //     return Ok();
-        // }
+        [HttpPut]
+        [Route("/api/wifi/probe")]
+        public IActionResult AddProbe([FromBody] WiFiProbe probe)
+        {
+            _service.AddProbe(probe);
+            Debug.WriteLine($"Received a Probe!", probe);
+            return Ok();
+        }
+        
+        [HttpPut]
+        [Route("/api/wifi/accesspoint")]
+        public IActionResult AddAccessPoint([FromBody] WiFiAccessPoint ap)
+        {
+            _service.AddAccessPoint(ap);
+            Debug.WriteLine($"Received an AccessPoint!", ap);
+            return Ok();
+        }
         
         // [HttpDelete]
         // [Route("/api/proxy")]

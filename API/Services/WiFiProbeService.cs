@@ -7,10 +7,10 @@ using Microsoft.AspNetCore.Http;
 
 namespace HerstAPI.Services
 {
-    public class WiFiProbeService
+    public class WiFiService
     {
-        private WiFiProbeRepository _repo;
-        public WiFiProbeService(WiFiProbeRepository repo) => _repo = repo;
+        private WiFiRepository _repo;
+        public WiFiService(WiFiRepository repo) => _repo = repo;
         internal IEnumerable<WiFiProbe> GetProbes(string mac, string ssid) => _repo.GetProbes(mac, ssid);
 
         internal void ReadFile(IFormFile file)
@@ -41,7 +41,10 @@ namespace HerstAPI.Services
                 }
                 catch { Console.WriteLine($"Failed to parse: {line}"); }
             }
-            _repo.Save();
         }
+
+        internal void AddAccessPoint(WiFiAccessPoint ap) => _repo.AddAccessPoint(ap);
+
+        internal void AddProbe(WiFiProbe probe) => _repo.AddProbe(probe);
     }
 }

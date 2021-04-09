@@ -13,6 +13,8 @@ namespace HerstAPI.Models
         public WiFiMac WiFiMac {get; set; }
         public WiFiNetworkName WiFiNetworkName {get; set; }
         public DateTime LastSeen { get; set; }
+
+        public WiFiClient Client {get;set;}
     }
 
     public class WiFiNetworkName

@@ -128,11 +128,18 @@ namespace ProxyAPI.Migrations
                         .Annotation("Sqlite:Autoincrement", true),
                     WiFiMacId = table.Column<ulong>(type: "INTEGER", nullable: true),
                     WiFiNetworkNameId = table.Column<ulong>(type: "INTEGER", nullable: true),
-                    LastSeen = table.Column<DateTime>(type: "TEXT", nullable: false)
+                    LastSeen = table.Column<DateTime>(type: "TEXT", nullable: false),
+                    ClientWiFiClientId = table.Column<ulong>(type: "INTEGER", nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_WiFiProbes", x => x.WiFiProbeId);
+                    table.ForeignKey(
+                        name: "FK_WiFiProbes_WiFiClients_ClientWiFiClientId",
+                        column: x => x.ClientWiFiClientId,
+                        principalTable: "WiFiClients",
+                        principalColumn: "WiFiClientId",
+                        onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
                         name: "FK_WiFiProbes_WiFiMacs_WiFiMacId",
                         column: x => x.WiFiMacId,
@@ -190,6 +197,11 @@ namespace ProxyAPI.Migrations
                 name: "IX_WiFiClients_WiFiMacId",
                 table: "WiFiClients",
                 column: "WiFiMacId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_WiFiProbes_ClientWiFiClientId",
+                table: "WiFiProbes",
+                column: "ClientWiFiClientId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_WiFiProbes_WiFiMacId",
