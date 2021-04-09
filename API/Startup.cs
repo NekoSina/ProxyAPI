@@ -11,6 +11,8 @@ using System.Text;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.AspNetCore.Identity;
 using AspNetCoreRateLimit;
+using Newtonsoft.Json;
+using System.Text.Json.Serialization;
 
 namespace HerstAPI
 {
@@ -24,10 +26,12 @@ namespace HerstAPI
 
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
-        {
+        {            
             services.Configure<IpRateLimitOptions>(Configuration.GetSection("IpRateLimiting"));
             services.AddDbContext<HerstDbContext>(opt => opt.UseSqlite(ConnectionString));
-            services.AddControllers();
+            services.AddControllers().AddJsonOptions(options=> {  
+                 options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.Preserve;
+            });
             services.AddMemoryCache();
             services.AddSingleton<IIpPolicyStore, MemoryCacheIpPolicyStore>();
             services.AddSingleton<IRateLimitCounterStore, MemoryCacheRateLimitCounterStore>();

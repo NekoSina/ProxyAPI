@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using HerstAPI.Database;
 using HerstAPI.Models;
@@ -21,7 +22,7 @@ namespace HerstAPI.Repositories
                                 .Include(p => p.Client.AccessPoints);
         }
 
-        internal void AddProbe(string mac, string ssid)
+        internal bool AddProbe(string mac, string ssid)
         {
             var client = GetOrCreateClient(mac);
             var probe = db.WiFiProbes.Include(p=> p.WiFiMac)
@@ -43,32 +44,50 @@ namespace HerstAPI.Repositories
                 probe.LastSeen = DateTime.UtcNow;
 
             db.SaveChanges();
+            return probe == null;
         }
-
-        internal void AddAccessPoint(WiFiAccessPoint ap)
+        internal bool AddAccessPoint(string mac, string ssid)
         {
-            var network = GetOrCreateNetworkName(ap.WiFiNetworkName.SSID);
-            var mac = GetOrCreateMac(ap.WiFiMac.MAC);
+            var network = GetOrCreateNetworkName(ssid);
+            var wifiMac = GetOrCreateMac(mac);
             var accessPoint = db.WiFiAccessPoints.Include(p=>p.WiFiMac)
                                                  .Include(p=>p.WiFiNetworkName)
-                                                 .Where(p=> p.WiFiMac == mac)
+                                                 .Where(p=> p.WiFiMac == wifiMac)
                                                  .FirstOrDefault(p=>p.WiFiNetworkName == network);
             if(accessPoint == null)
             {                                   
+                var clients = db.WiFiClients.Include(i=> i.AccessPoints)
+                                            .Where(a=> a.AccessPoints
+                                                .All(ap=>ap.WiFiNetworkName == network))
+                                            .ToList();
+
                 db.WiFiAccessPoints.Add(new WiFiAccessPoint
                 {
                     LastSeen = DateTime.UtcNow,
-                    WiFiMac = mac,
-                    WiFiNetworkName = network
+                    WiFiMac = wifiMac,
+                    WiFiNetworkName = network,
+                    Clients = clients
                 });
             }
             else
                 accessPoint.LastSeen = DateTime.UtcNow;
 
             db.SaveChanges();
+            return accessPoint == null;
+        }
+        internal bool AddAccessPoint(WiFiAccessPoint ap) => AddAccessPoint(ap.WiFiMac.MAC, ap.WiFiNetworkName.SSID);
+
+        internal IQueryable<WiFiAccessPoint> GetAccessPoints(string mac, string ssid)
+        {
+            return db.WiFiAccessPoints.Include(p => p.Clients)
+                                .ThenInclude(p=>p.WiFiMac)
+                                .Include(p => p.WiFiMac)
+                                .Include(p => p.WiFiNetworkName)
+                                .Where(p => string.IsNullOrEmpty(mac) || p.WiFiMac.MAC == mac)
+                                .Where(p => string.IsNullOrEmpty(ssid) || p.WiFiNetworkName.SSID == ssid);
         }
 
-        internal void AddProbe(WiFiProbe probe) => AddProbe(probe.WiFiMac.MAC, probe.WiFiNetworkName.SSID);
+        internal bool AddProbe(WiFiProbe probe) => AddProbe(probe.WiFiMac.MAC, probe.WiFiNetworkName.SSID);
 
         private WiFiClient GetOrCreateClient(string mac)
         {
