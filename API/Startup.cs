@@ -11,7 +11,6 @@ using System.Text;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.AspNetCore.Identity;
 using AspNetCoreRateLimit;
-using Newtonsoft.Json;
 using System.Text.Json.Serialization;
 
 namespace HerstAPI
