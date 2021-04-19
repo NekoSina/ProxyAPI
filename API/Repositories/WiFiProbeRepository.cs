@@ -15,10 +15,8 @@ namespace HerstAPI.Repositories
         {
             return db.WiFiProbes.Where(p => string.IsNullOrEmpty(mac) || p.WiFiMac.MAC == mac)
                                 .Where(p => string.IsNullOrEmpty(ssid) || p.WiFiNetworkName.SSID == ssid)
-                                .Include(p => p.Client)
                                 .Include(p => p.WiFiMac)
-                                .Include(p => p.WiFiNetworkName)
-                                .Include(p => p.Client.AccessPoints);
+                                .Include(p => p.WiFiNetworkName);
         }
 
         internal bool AddProbe(string mac, string ssid)
@@ -33,7 +31,6 @@ namespace HerstAPI.Repositories
             {
                 db.WiFiProbes.Add(new WiFiProbe
                 {
-                    Client = client,
                     WiFiMac = client.WiFiMac,
                     WiFiNetworkName = GetOrCreateNetworkName(ssid),
                     LastSeen = DateTime.UtcNow
@@ -64,8 +61,7 @@ namespace HerstAPI.Repositories
                 {
                     LastSeen = DateTime.UtcNow,
                     WiFiMac = wifiMac,
-                    WiFiNetworkName = network,
-                    Clients = clients
+                    WiFiNetworkName = network
                 });
             }
             else
@@ -78,12 +74,10 @@ namespace HerstAPI.Repositories
 
         internal IQueryable<WiFiAccessPoint> GetAccessPoints(string mac, string ssid)
         {
-            return db.WiFiAccessPoints.Include(p => p.Clients)
-                                .ThenInclude(p=>p.WiFiMac)
-                                .Include(p => p.WiFiMac)
-                                .Include(p => p.WiFiNetworkName)
-                                .Where(p => string.IsNullOrEmpty(mac) || p.WiFiMac.MAC == mac)
-                                .Where(p => string.IsNullOrEmpty(ssid) || p.WiFiNetworkName.SSID == ssid);
+            return db.WiFiAccessPoints.Include(p => p.WiFiMac)
+                                        .Include(p => p.WiFiNetworkName)
+                                        .Where(p => string.IsNullOrEmpty(mac) || p.WiFiMac.MAC == mac)
+                                        .Where(p => string.IsNullOrEmpty(ssid) || p.WiFiNetworkName.SSID == ssid);
         }
 
         internal bool AddProbe(WiFiProbe probe) => AddProbe(probe.WiFiMac.MAC, probe.WiFiNetworkName.SSID);

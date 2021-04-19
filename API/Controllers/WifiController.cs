@@ -5,8 +5,9 @@ using HerstAPI.Database;
 using HerstAPI.Models;
 using HerstAPI.Repositories;
 using HerstAPI.Services;
-using System.Diagnostics;
 using HerstAPI.Models.DTOs;
+using System.Text.Json;
+using System;
 
 namespace HerstAPI.Controllers
 {
@@ -36,8 +37,8 @@ namespace HerstAPI.Controllers
         [Route("/api/wifi/probe")]
         public IActionResult AddProbe([FromBody] WiFiProbe probe)
         {
-            Debug.WriteLine($"Received a Probe!", probe);
-            return Ok(new PutResponseDto { IsNew = _service.AddProbe(probe) });
+            Console.WriteLine($"Received a Probe!", probe);
+            return Ok(new PutResponseDto { IsNew = _service.AddProbe(probe), DataSet = JsonSerializer.Serialize(probe) });
         }
 
         [HttpGet]
@@ -45,20 +46,14 @@ namespace HerstAPI.Controllers
         public IEnumerable<WiFiAccessPointDto> GetAccessPoint(string mac, string ssid)
         {
             foreach (var ap in _service.GetAccessPoints(mac, ssid))
-            {
-                var dto = new WiFiAccessPointDto { Mac = ap.WiFiMac.MAC, Ssid = ap.WiFiNetworkName.SSID, LastSeen = ap.LastSeen };
-                dto.Clients = new List<string>();
-                foreach (var client in ap.Clients)
-                    dto.Clients.Add(client.WiFiMac?.MAC);
-                yield return dto;
-            }
+                yield return new WiFiAccessPointDto { Mac = ap.WiFiMac.MAC, Ssid = ap.WiFiNetworkName.SSID, LastSeen = ap.LastSeen };;
         }
         [HttpPut]
         [Route("/api/wifi/accesspoint")]
         public IActionResult AddAccessPoint([FromBody] WiFiAccessPoint ap)
         {
-            Debug.WriteLine($"Received an AccessPoint!", ap);
-            return Ok(new PutResponseDto { IsNew = _service.AddAccessPoint(ap) });
+            Console.WriteLine($"Received an AccessPoint!", ap);
+            return Ok(new PutResponseDto { IsNew = _service.AddAccessPoint(ap), DataSet = JsonSerializer.Serialize(ap) });
         }
 
         // [HttpDelete]

@@ -13,8 +13,6 @@ namespace HerstAPI.Models
         public WiFiMac WiFiMac {get; set; }
         public WiFiNetworkName WiFiNetworkName {get; set; }
         public DateTime LastSeen { get; set; }
-
-        public WiFiClient Client {get;set;}
     }
 
     public class WiFiNetworkName
@@ -48,7 +46,6 @@ namespace HerstAPI.Models
         public ulong WiFiAccessPointId{get;set;}
         public WiFiMac WiFiMac {get;set;}
         public WiFiNetworkName WiFiNetworkName {get;set;}
-        public List<WiFiClient> Clients {get;set;}
         public DateTime LastSeen { get; set; }
     }
 }
