@@ -6,21 +6,18 @@ using HerstAPI.Models;
 using HerstAPI.Repositories;
 using HerstAPI.Services;
 using HerstAPI.Models.DTOs;
-using System.Text.Json;
 using System;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 
 namespace HerstAPI.Controllers
 {
     [ApiController]
-    //[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     public class WiFiController : ControllerBase
     {
         private WiFiService _service;
-        public WiFiController(HerstDbContext context)
-        {
-            _service = new WiFiService(new WiFiRepository(context));
-
-        }
+        public WiFiController(HerstDbContext context) => _service = new WiFiService(new WiFiRepository(context));
 
         [HttpGet]
         [Route("/api/wifi/probe")]
@@ -37,8 +34,8 @@ namespace HerstAPI.Controllers
         [Route("/api/wifi/probe")]
         public IActionResult AddProbe([FromBody] WiFiProbe probe)
         {
-            Console.WriteLine($"Received a Probe!", probe);
-            return Ok(new PutResponseDto { IsNew = _service.AddProbe(probe), DataSet = JsonSerializer.Serialize(probe) });
+            Console.WriteLine($"[{DateTime.Now}] Received a Probe: " + probe);
+            return Ok(_service.AddProbe(probe)); 
         }
 
         [HttpGet]
@@ -52,16 +49,8 @@ namespace HerstAPI.Controllers
         [Route("/api/wifi/accesspoint")]
         public IActionResult AddAccessPoint([FromBody] WiFiAccessPoint ap)
         {
-            Console.WriteLine($"Received an AccessPoint!", ap);
-            return Ok(new PutResponseDto { IsNew = _service.AddAccessPoint(ap), DataSet = JsonSerializer.Serialize(ap) });
+            Console.WriteLine($"[{DateTime.Now}] Received an AccessPoint: "+ ap);
+            return Ok(_service.AddAccessPoint(ap));
         }
-
-        // [HttpDelete]
-        // [Route("/api/proxy")]
-        // public IActionResult DeleteProxy(uint id)
-        // {
-        //     _services.DeleteProxy(id);
-        //     return Ok();
-        // }
     }
 }

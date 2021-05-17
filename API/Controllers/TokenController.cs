@@ -14,7 +14,6 @@ using HerstAPI.Services;
 
 namespace HerstAPI.Controllers
 {
-    [Route("api/[controller]")]
     [ApiController]
     public class TokenController : ControllerBase
     {
@@ -28,6 +27,7 @@ namespace HerstAPI.Controllers
         }
 
         [HttpPost]
+        [Route("api/auth/token")]
         public ActionResult Post(UserInfo _userData)
         {
             if (_userData != null && _userData.Username != null && _userData.Password != null)
