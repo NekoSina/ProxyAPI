@@ -1,6 +1,6 @@
 using System;
 
-namespace wifimon.TrblApi.Models
+namespace libherst.Models
 {
     public class WiFiMac
     {

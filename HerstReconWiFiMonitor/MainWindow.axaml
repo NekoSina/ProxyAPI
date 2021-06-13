@@ -1,0 +1,79 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        mc:Ignorable="d" d:DesignWidth="360" d:DesignHeight="720"
+        x:Class="HerstReconWiFiMonitor.MainWindow"
+        Title="Her.st Recon WiFi Monitor" Opened="OnOpened">
+    <Grid RowDefinitions="1*,3*,7*,1*">
+        <!-- Grid Row 0 -->
+        
+        <StackPanel Spacing="10" Orientation="Horizontal" Grid.Row="0">
+            <Image Margin="8" Source="img.png" />
+            <TextBlock VerticalAlignment="Center" HorizontalAlignment="Center" FontSize="20" Text="Her.st Recon WiFi Monitor v1" />
+        </StackPanel>
+        
+        <!-- Grid Row 1 -->
+        
+        <TabControl Grid.Row="1">
+            
+        </TabControl>
+        <DataGrid VerticalAlignment="Stretch" HorizontalAlignment="Stretch" AutoGenerateColumns="False" Items="{Binding Probes}" Grid.Row="1">
+            <DataGrid.Columns>
+                <DataGridTextColumn Header="Signal" 
+                                    Binding="{Binding SignalStrength}" 
+                                    Width="1.5*" 
+                                    CellStyleClasses="gdp" />
+                <DataGridTextColumn Header="MAC" 
+                                    Binding="{Binding MAC}" 
+                                    Width="3*" />
+                <DataGridTextColumn Header="SSID" 
+                                    Binding="{Binding SSID}" 
+                                    Width="5*" />
+            </DataGrid.Columns>
+        </DataGrid>
+        
+        <!-- Grid Row 2 -->
+        
+        <DataGrid AutoGenerateColumns="False" Items="{Binding Beacons}" Grid.Row="2">
+            <DataGrid.Columns>
+                <DataGridTextColumn Header="Signal"
+                                    IsReadOnly="True"
+                                    Binding="{Binding SignalStrength}"
+                                    Width="1.5*"
+                                    CellStyleClasses="gdp" />
+                <DataGridTextColumn Header="MAC"
+                                    IsReadOnly="True"
+                                    Binding="{Binding MAC}"
+                                    Width="3*" />
+                <DataGridTextColumn Header="SSID"
+                                    IsReadOnly="True"
+                                    Binding="{Binding SSID}"
+                                    Width="5*" />
+            </DataGrid.Columns>
+        </DataGrid>
+        
+        <!-- Grid Row 3 -->
+        
+        <StackPanel Margin="1" Orientation="Horizontal" Grid.Row="3" Spacing="10">
+            <Button BorderThickness="0" BorderBrush="{Binding null}">
+                <StackPanel>
+                    <Image  Width="32" Height="32" Source="img.png" />
+                    <TextBlock HorizontalAlignment="Center" FontSize="12">Home</TextBlock>
+                </StackPanel>
+            </Button>
+            <Button x:Name="MyButton" BorderThickness="0">
+                <StackPanel>
+                    <Image  Width="32" Height="32" Source="img.png" />
+                    <TextBlock HorizontalAlignment="Center" FontSize="12">Graph</TextBlock>
+                </StackPanel>
+            </Button>
+            <Button BorderThickness="0">
+                <StackPanel>
+                    <Image Width="32" Height="32" Source="img.png" />
+                    <TextBlock HorizontalAlignment="Center" FontSize="12">API</TextBlock>
+                </StackPanel>
+            </Button>
+        </StackPanel>
+    </Grid>
+</Window>

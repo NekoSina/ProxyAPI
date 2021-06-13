@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace wifimon.TrblApi.Models
+namespace libherst.Models
 {
     public class WiFiAccessPoint
     {
