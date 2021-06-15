@@ -26,7 +26,7 @@ namespace HerstAPI.Controllers
         [Route("/api/proxy")]
         public IEnumerable<Proxy> GetProxies(string region, string country, int hoursSinceTest,int score)
         {
-            var proxies = _services.GetProxies(region, country,hoursSinceTest,score);
+            var proxies = _services.GetProxies(region, country,hoursSinceTest,score).Take(10);
 
             foreach(var proxy in proxies)
             {

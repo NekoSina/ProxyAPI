@@ -1,4 +1,5 @@
 using System.Collections.Concurrent;
+using System.Collections.Generic;
 using System.Net;
 using System.Text.Json;
 using System.Threading.Tasks;
@@ -17,7 +18,7 @@ namespace libherst
         public async Task<BlockingCollection<Proxy>> GetProxiesAsync()
         {
             var json = await HttpClient.GetStringAsync($"{ENDPOINT}/proxy");
-            var proxies = JsonSerializer.Deserialize<Proxy[]>(json, SerializerOptions);
+            var proxies = JsonSerializer.Deserialize<IEnumerable<Proxy>>(json, SerializerOptions);
             var bc = new BlockingCollection<Proxy>();
 
             if (proxies != null) 

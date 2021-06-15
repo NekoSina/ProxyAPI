@@ -10,9 +10,11 @@ using libherst.Models;
 
 namespace libherst
 {
+    ///
+    /// <Summary>Instantiate TrblProxyClient, TrblWifiClient,... instead</Summary>
     public abstract class TrblApiClient
     {
-        internal const string ENDPOINT = "https://recon.her.st/api";
+        internal const string ENDPOINT = "http://localhost:5000/api";
         internal readonly JsonSerializerOptions SerializerOptions;
         internal readonly HttpClient HttpClient;
 

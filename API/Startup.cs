@@ -29,7 +29,7 @@ namespace HerstAPI
             services.Configure<IpRateLimitOptions>(Configuration.GetSection("IpRateLimiting"));
             services.AddDbContext<HerstDbContext>(opt => opt.UseSqlite(ConnectionString));
             services.AddControllers().AddJsonOptions(options=> {  
-                 options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.Preserve;
+                 options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles;
             });
             services.AddMemoryCache();
             services.AddSingleton<IIpPolicyStore, MemoryCacheIpPolicyStore>();
