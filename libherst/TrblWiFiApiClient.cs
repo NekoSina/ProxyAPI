@@ -11,7 +11,7 @@ namespace libherst
         {
             try
             {
-                var response = await HttpClient.PutAsync($"{ENDPOINT}/wifi/probe",ToJsonContent(probe));
+                var response = await HttpClient.PutAsync($"{ENDPOINT}/wifi/probe", ToJsonContent(probe));
                 if(response.StatusCode != HttpStatusCode.OK)
                     return false;
                 var dto = await response.Content.ReadAsStringAsync();
@@ -24,7 +24,7 @@ namespace libherst
         {
             try
             {
-                var response = await HttpClient.PutAsync($"{ENDPOINT}/wifi/accesspoint",ToJsonContent(ap));
+                var response = await HttpClient.PutAsync($"{ENDPOINT}/wifi/accesspoint", ToJsonContent(ap));
                 if(response.StatusCode != HttpStatusCode.OK)
                     return false;
                 var result = await response.Content.ReadAsStringAsync();

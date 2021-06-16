@@ -6,12 +6,12 @@ using libherst.Models;
 
 namespace ProxyTester
 {
-    public class ProxyTestClient
+    public static class ProxyTestClient
     {
         private const string TEST_TARGET = "https://her.st/";
-        private static string _responseWithoutProxy = new WebClient().DownloadString(TEST_TARGET).Trim();
+        private static readonly string _responseWithoutProxy = new WebClient().DownloadString(TEST_TARGET).Trim();
 
-        public async Task<bool> TestAsync(Proxy proxy, TimeSpan timeout)
+        public static async Task<bool> TestAsync(Proxy proxy, TimeSpan timeout)
         {
             proxy.LastTest = DateTime.UtcNow;
 
@@ -26,7 +26,7 @@ namespace ProxyTester
                 var reader = new StreamReader(resp.GetResponseStream());
                 var html = await reader.ReadToEndAsync();
 
-                proxy.Working = (html.Trim() == _responseWithoutProxy);
+                proxy.Working = html.Trim() == _responseWithoutProxy;
                 
                 if (proxy.Working)
                     proxy.Score += 3;

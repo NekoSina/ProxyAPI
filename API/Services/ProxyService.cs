@@ -11,7 +11,7 @@ namespace HerstAPI.Services
 {
     public class ProxyService
     {
-        private ProxyRepository _proxyRepository;
+        private readonly ProxyRepository _proxyRepository;
         public ProxyService(ProxyRepository repository) => _proxyRepository = repository;
 
         public void ReadFile(IFormFile file)
@@ -28,9 +28,17 @@ namespace HerstAPI.Services
         }
 
         internal void AddProxy(Proxy proxy) => _proxyRepository.AddOrUpdateProxy(proxy);
-        internal void UpdateProxy(Proxy proxy) => _proxyRepository.AddOrUpdateProxy(proxy);
+        internal void UpdateProxy(Proxy proxy) 
+        {
+             _proxyRepository.AddOrUpdateProxy(proxy);
+        }
 
-        private bool CheckFileSize(IFormFile file)
+        internal IEnumerable<Proxy> GetProxiesToTest(int count)
+        {
+            return _proxyRepository.GetProxies(string.Empty,string.Empty).OrderBy(p=> p.LastTest).Take(count);
+        }
+
+        private static bool CheckFileSize(IFormFile file)
         {
             var size = 10 * 1024 * 1024;
             if (file.Length < size)

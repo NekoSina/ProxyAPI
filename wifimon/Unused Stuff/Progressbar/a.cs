@@ -122,7 +122,7 @@ namespace AaronLuna.ConsoleProgressBar
             outputBuilder.Append('\b', _currentText.Length - commonPrefixLength);
 
             // Output new suffix
-            outputBuilder.Append(text.Substring(commonPrefixLength));
+            outputBuilder.Append(text[commonPrefixLength..]);
 
             // If the new text is shorter than the old one: delete overlapping characters
             var overlapCount = _currentText.Length - text.Length;

@@ -6,8 +6,6 @@ namespace HerstAPI.Logic
 {
     public static class Helpers
     {
-        public static Random Random = new Random();
-        
         public static uint IpToInt(string ipString)
         {
             var ipAddress = IPAddress.Parse(ipString);

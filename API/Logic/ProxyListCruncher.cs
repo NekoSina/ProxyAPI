@@ -9,12 +9,12 @@ namespace HerstAPI.Logic
 {
     public static class ProxyListCruncher
     {
-        private static ConcurrentDictionary<string, object> _cache = new ConcurrentDictionary<string, object>();
-        private static IP2Location.Component IpQuery = new IP2Location.Component();
-        private static IP2Proxy.Component ProxyQuery = new IP2Proxy.Component();
+        private static readonly ConcurrentDictionary<string, object> _cache = new();
+        private static readonly IP2Location.Component IpQuery = new();
+        private static readonly IP2Proxy.Component ProxyQuery = new();
         private static ulong processedLines = 0;
-        private static BlockingCollection<string> pendingLines = new BlockingCollection<string>();
-        private static Thread[] workerThreads;
+        private static readonly BlockingCollection<string> pendingLines = new();
+        private static readonly Thread[] workerThreads;
 
         static ProxyListCruncher()
         {
@@ -125,7 +125,7 @@ namespace HerstAPI.Logic
                 return false;
 
             if (proxy.Contains("("))
-                proxy = proxy.Substring(proxy.IndexOf("(")).Replace(")", "").Trim();
+                proxy = proxy[proxy.IndexOf("(")..].Replace(")", "").Trim();
 
             var proxyParts = proxy.Split(':');
             var portString = proxyParts[1];

@@ -5,7 +5,7 @@ namespace HerstAPI.Services
 {
     public class TokenService
     {
-        private UserRepository _userRepository;
+        private readonly UserRepository _userRepository;
         public TokenService(UserRepository repository) => _userRepository = repository;
 
         public bool TryAuthenticate(string user, string pass, out UserInfo userInfo)

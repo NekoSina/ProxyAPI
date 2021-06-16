@@ -1,13 +1,13 @@
 using System.Collections.Generic;
 using System.Linq;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
 using HerstAPI.Database;
 using HerstAPI.Models;
 using HerstAPI.Repositories;
 using HerstAPI.Services;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
 
 namespace HerstAPI.Controllers
 {
@@ -16,12 +16,18 @@ namespace HerstAPI.Controllers
     [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     public class ProxyController : ControllerBase
     {
-        private ProxyService _services;
+        private readonly ProxyService _services;
         public ProxyController(HerstDbContext context)
         {
             _services = new ProxyService(new ProxyRepository(context));
         }
 
+        [HttpGet]
+        [Route("/api/proxy/test")]
+        public IEnumerable<Proxy> GetProxies(int count)
+        {
+            return _services.GetProxiesToTest(count);
+        }
         [HttpGet]
         [Route("/api/proxy")]
         public IEnumerable<Proxy> GetProxies(string region, string country, int hoursSinceTest,int score)

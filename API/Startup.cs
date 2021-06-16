@@ -35,34 +35,34 @@ namespace HerstAPI
             services.AddSingleton<IIpPolicyStore, MemoryCacheIpPolicyStore>();
             services.AddSingleton<IRateLimitCounterStore, MemoryCacheRateLimitCounterStore>();
             services.AddSingleton<IRateLimitConfiguration, RateLimitConfiguration>();
-            services.AddSwaggerGen(c =>
-            {
-                c.SwaggerDoc("v1", new OpenApiInfo { Title = "Her.st Intelligence API", Version = "1.0" });
-                var secDef = new OpenApiSecurityScheme
-                {
-                    Name = "Bearer",
-                    BearerFormat = "JWT",
-                    Scheme = "bearer",
-                    Description = "Specify the authorization token.",
-                    In = ParameterLocation.Header,
-                    Type = SecuritySchemeType.Http,
-                };
-                c.AddSecurityDefinition("jwt_auth", secDef);
+            _ = services.AddSwaggerGen(c =>
+              {
+                  c.SwaggerDoc("v1", new OpenApiInfo { Title = "Her.st Intelligence API", Version = "1.0" });
+                  var secDef = new OpenApiSecurityScheme
+                  {
+                      Name = "Bearer",
+                      BearerFormat = "JWT",
+                      Scheme = "bearer",
+                      Description = "Specify the authorization token.",
+                      In = ParameterLocation.Header,
+                      Type = SecuritySchemeType.Http,
+                  };
+                  c.AddSecurityDefinition("jwt_auth", secDef);
 
-                var secScheme = new OpenApiSecurityScheme
-                {
-                    Reference = new OpenApiReference
-                    {
-                        Id = "jwt_auth",
-                        Type = ReferenceType.SecurityScheme
-                    }
-                };
-                var secReqs = new OpenApiSecurityRequirement
-                {
-                    {secScheme, new string[] { }},
-                };
-                c.AddSecurityRequirement(secReqs);
-            });
+                  var secScheme = new OpenApiSecurityScheme
+                  {
+                      Reference = new OpenApiReference
+                      {
+                          Id = "jwt_auth",
+                          Type = ReferenceType.SecurityScheme
+                      }
+                  };
+                  var secReqs = new OpenApiSecurityRequirement
+                  {
+                    {secScheme, System.Array.Empty<string>()},
+                  };
+                  c.AddSecurityRequirement(secReqs);
+              });
 
             services.AddAuthentication(options =>
             {

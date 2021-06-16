@@ -35,7 +35,7 @@ namespace libherst
             return response.StatusCode == HttpStatusCode.OK;
         }
 
-        internal async Task<HttpContent> ToFileUpload(string path)
+        internal static async Task<HttpContent> ToFileUpload(string path)
         {
             using var form = new MultipartFormDataContent();
             using var fileContent = new ByteArrayContent(await File.ReadAllBytesAsync(path));
@@ -44,6 +44,6 @@ namespace libherst
             return form;
         }
 
-        internal StringContent ToJsonContent(object input) => new(JsonSerializer.Serialize(input), Encoding.UTF8, "application/json");
+        internal static StringContent ToJsonContent(object input) => new(JsonSerializer.Serialize(input), Encoding.UTF8, "application/json");
     }
 }

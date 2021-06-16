@@ -18,7 +18,6 @@ namespace ProxyTester
             PASS=args[1];
             THREAD_COUNT= int.Parse(args[2]);
 
-            var prxyClient = new ProxyTestClient();
             var trblClient = new TrblProxyApiClient();
 
             if (await trblClient.LoginAsync(USER, PASS))
@@ -28,7 +27,7 @@ namespace ProxyTester
                 while (true)
                 {
                     var taskList = new List<Task>();
-                    var proxies = await trblClient.GetProxiesAsync();
+                    var proxies = await trblClient.GetProxyToTest(THREAD_COUNT);
                     var current = 0;
                     var total = proxies.Count;
                     Console.WriteLine($"Got {total} proxies to test, starting work on {THREAD_COUNT} threads...");
@@ -41,7 +40,7 @@ namespace ProxyTester
                             {
                                 Console.Title = $"Working on Proxy [{proxy.Id}] - {proxy.IP}:{proxy.Port} ({current}/{total})";
                                 Interlocked.Increment(ref current);
-                                await prxyClient.TestAsync(proxy, TimeSpan.FromSeconds(30));
+                                await ProxyTestClient.TestAsync(proxy, TimeSpan.FromSeconds(30));
                                 await trblClient.UpdateProxyAsync(proxy);
 
                                 if (proxy.Score < -100 && !proxy.Working)

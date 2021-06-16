@@ -8,7 +8,7 @@
             "name": "ProxyTester",
             "type": "coreclr",
             "request": "launch",
-            "preLaunchTask": "build",
+            "preLaunchTask": "buildtester",
             // If you have changed target frameworks, make sure to update the program path.
             "program": "${workspaceFolder}/ProxyTester/bin/Debug/net6.0/ProxyTester.dll",
             "args": ["trbl","herst", "1"],
@@ -21,7 +21,7 @@
             "name": "ReconAPI",
             "type": "coreclr",
             "request": "launch",
-            "preLaunchTask": "build",
+            "preLaunchTask": "buildapi",
             "program": "${workspaceFolder}/API/bin/Debug/net6.0/ProxyAPI.dll",
             "args": [],
             "cwd": "${workspaceFolder}/API",

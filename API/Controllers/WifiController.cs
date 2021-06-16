@@ -16,7 +16,7 @@ namespace HerstAPI.Controllers
     [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     public class WiFiController : ControllerBase
     {
-        private WiFiService _service;
+        private readonly WiFiService _service;
         public WiFiController(HerstDbContext context) => _service = new WiFiService(new WiFiRepository(context));
 
         [HttpGet]

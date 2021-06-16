@@ -10,13 +10,13 @@ namespace HerstAPI.Services
 {
     public class WiFiService
     {
-        private WiFiRepository _repo;
+        private readonly WiFiRepository _repo;
         public WiFiService(WiFiRepository repo) => _repo = repo;
 
         internal WiFiUploadResponseDto ReadFile(IFormFile file)
         {
             int totalCount =0,validCount = 0, newCount = 0, beaconCount = 0, probeCount = 0;
-            List<string> invalidEntries = new List<string>();
+            List<string> invalidEntries = new();
             using var stream = new StreamReader(file.OpenReadStream());
 
             while (!stream.EndOfStream)

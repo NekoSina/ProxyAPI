@@ -19,9 +19,9 @@ namespace HerstReconWiFiMonitor
         public ObservableCollection<CacheEntry> Probes { get; set; }
         public ObservableCollection<CacheEntry> Beacons { get; set; }
 
-        public static BeaconMonitor BeaconMonitor;
-        public static ProbeMonitor ProbeMonitor;
-        public static ICaptureDevice Device;
+        internal static BeaconMonitor BeaconMonitor;
+        internal static ProbeMonitor ProbeMonitor;
+        internal static ICaptureDevice Device;
 
         public MainWindow()
         {
@@ -70,7 +70,7 @@ namespace HerstReconWiFiMonitor
         }
         private static ICaptureDevice FindDevice() => CaptureDeviceList.Instance.FirstOrDefault(dev => dev.Name.Contains("wlan") || dev.Name.Contains("wlp"));
 
-        private static async void device_OnPacketArrival(object sender, CaptureEventArgs e)
+        private static async void Device_OnPacketArrival(object sender, CaptureEventArgs e)
         {
             try
             {
@@ -113,7 +113,7 @@ namespace HerstReconWiFiMonitor
                 Console.WriteLine($"-- Bringing up {Device.Name} took {devUpResult.RunTime.TotalMilliseconds}ms");
                 BeaconMonitor = new BeaconMonitor("beacons.log");
                 ProbeMonitor = new ProbeMonitor("probes.log");
-                Device.OnPacketArrival += device_OnPacketArrival;
+                Device.OnPacketArrival += Device_OnPacketArrival;
                 Device.Open(DeviceMode.Promiscuous, 2000, MonitorMode.Inactive);
                 Device.StartCapture();
 

@@ -1,5 +1,6 @@
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Linq;
 using System.Net;
 using System.Text.Json;
 using System.Threading.Tasks;
@@ -28,6 +29,17 @@ namespace libherst
             }
             return bc;
         }
+
+        public async Task<BlockingCollection<Proxy>> GetProxyToTest(int amount)
+        {
+            var json = await HttpClient.GetStringAsync($"{ENDPOINT}/proxy/test?count={amount}");
+            var proxies = JsonSerializer.Deserialize<IEnumerable<Proxy>>(json, SerializerOptions).ToArray();
+            var bc = new BlockingCollection<Proxy>(proxies.Length);
+            foreach(var proxy in proxies)
+                bc.Add(proxy);
+            return bc;
+        }
+
         public async Task<bool> UpdateProxyAsync(Proxy proxy)
         {
             var response = await HttpClient.PatchAsync($"{ENDPOINT}/proxy", ToJsonContent(proxy));

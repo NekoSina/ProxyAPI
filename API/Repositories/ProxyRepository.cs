@@ -35,7 +35,7 @@ namespace HerstAPI.Repositories
         }
         public bool TryAddProxy(Proxy proxy)
         {
-            if (TryGetProxy(proxy.ID, out var oldProxy))
+            if (TryGetProxy(proxy.ID, out var _))
                 return false;
             db.Proxies.Add(proxy);
             Save(); return true;

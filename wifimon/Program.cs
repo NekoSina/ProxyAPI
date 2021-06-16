@@ -21,7 +21,7 @@ namespace wifimon
 
 
         public static string Color(int color) => $"\u001b[38;5;{color}m";
-        static async Task Main(string[] args)
+        static async Task Main()
         {
             // for (int x = 0; x < 16; x++)
             // {
@@ -173,7 +173,7 @@ namespace wifimon
                     return dev;
             return null;
         }
-        private static async void device_OnPacketArrival(object sender, CaptureEventArgs e)
+        private static async void Device_OnPacketArrival(object sender, CaptureEventArgs e)
         {
             try
             {
@@ -216,7 +216,7 @@ namespace wifimon
                 Console.WriteLine($"-- Bringing up {Device.Name} took {devUpResult.RunTime.TotalMilliseconds}ms");
                 BeaconMonitor = new BeaconMonitor("beacons.log");
                 ProbeMonitor = new ProbeMonitor("probes.log");
-                Device.OnPacketArrival += device_OnPacketArrival;
+                Device.OnPacketArrival += Device_OnPacketArrival;
                 Device.Open(DeviceMode.Promiscuous, 2000, MonitorMode.Inactive);
                 Device.StartCapture();
 
