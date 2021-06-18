@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
-using HerstAPI.Models;
+using libherst.Models;
 using HerstAPI.Models.DTOs;
 using HerstAPI.Repositories;
 using Microsoft.AspNetCore.Http;

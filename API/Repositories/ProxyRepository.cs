@@ -1,7 +1,7 @@
 using System;
 using System.Linq;
 using HerstAPI.Database;
-using HerstAPI.Models;
+using libherst.Models;
 
 namespace HerstAPI.Repositories
 {
@@ -22,7 +22,7 @@ namespace HerstAPI.Repositories
         }
         public void AddOrUpdateProxy(Proxy proxy)
         {
-            if (TryGetProxy(proxy.ID, out var oldProxy))
+            if (TryGetProxy(proxy.Id, out var oldProxy))
             {
                 oldProxy.Score = proxy.Score;
                 oldProxy.Working = proxy.Working;
@@ -35,7 +35,7 @@ namespace HerstAPI.Repositories
         }
         public bool TryAddProxy(Proxy proxy)
         {
-            if (TryGetProxy(proxy.ID, out var _))
+            if (TryGetProxy(proxy.Id, out var _))
                 return false;
             db.Proxies.Add(proxy);
             Save(); return true;

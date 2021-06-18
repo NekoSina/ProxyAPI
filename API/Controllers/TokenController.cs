@@ -2,15 +2,13 @@ using System;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using HerstAPI.Database;
-using HerstAPI.Models;
 using HerstAPI.Repositories;
 using HerstAPI.Services;
+using libherst.Models;
 
 namespace HerstAPI.Controllers
 {

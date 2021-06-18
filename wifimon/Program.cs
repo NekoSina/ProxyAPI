@@ -173,7 +173,7 @@ namespace wifimon
                     return dev;
             return null;
         }
-        private static async void Device_OnPacketArrival(object sender, CaptureEventArgs e)
+        private static void Device_OnPacketArrival(object sender, CaptureEventArgs e)
         {
             try
             {
@@ -182,10 +182,10 @@ namespace wifimon
                 var probeRequest = packet.Extract<ProbeRequestFrame>();
 
                 if (beaconFrame != null)
-                    await BeaconMonitor.HandlePacket(packet, beaconFrame);
+                    BeaconMonitor.HandlePacket(packet, beaconFrame);
 
                 if (probeRequest != null)
-                    await ProbeMonitor.HandlePacket(packet, probeRequest);
+                    ProbeMonitor.HandlePacket(packet, probeRequest);
             }
             catch (Exception ex)
             {

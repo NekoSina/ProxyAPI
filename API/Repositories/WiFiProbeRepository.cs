@@ -1,7 +1,7 @@
 using System;
 using System.Linq;
 using HerstAPI.Database;
-using HerstAPI.Models;
+using libherst.Models;
 using Microsoft.EntityFrameworkCore;
 
 namespace HerstAPI.Repositories

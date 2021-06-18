@@ -2,13 +2,13 @@ using System.Collections.Generic;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using HerstAPI.Database;
-using HerstAPI.Models;
 using HerstAPI.Repositories;
 using HerstAPI.Services;
 using HerstAPI.Models.DTOs;
 using System;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using libherst.Models;
 
 namespace HerstAPI.Controllers
 {

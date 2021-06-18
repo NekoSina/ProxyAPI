@@ -1,10 +1,14 @@
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace libherst.Models
 {
     public class WiFiClient
     {
+        [Key]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public ulong WiFiClientId{get;set;}
         public WiFiMac WiFiMac {get;set;}
         public List<WiFiAccessPoint> AccessPoints {get;set;}

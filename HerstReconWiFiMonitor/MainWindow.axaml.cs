@@ -61,7 +61,7 @@ namespace HerstReconWiFiMonitor
                             Beacons.Add(ce);
                         Thread.Sleep(1000);
                     }
-                });
+                }).ConfigureAwait(false);
             }
             catch (Exception e)
             {
@@ -70,7 +70,7 @@ namespace HerstReconWiFiMonitor
         }
         private static ICaptureDevice FindDevice() => CaptureDeviceList.Instance.FirstOrDefault(dev => dev.Name.Contains("wlan") || dev.Name.Contains("wlp"));
 
-        private static async void Device_OnPacketArrival(object sender, CaptureEventArgs e)
+        private static void Device_OnPacketArrival(object sender, CaptureEventArgs e)
         {
             try
             {
@@ -79,10 +79,10 @@ namespace HerstReconWiFiMonitor
                 var probeRequest = packet.Extract<ProbeRequestFrame>();
 
                 if (beaconFrame != null)
-                    await BeaconMonitor.HandlePacket(packet, beaconFrame);
+                    BeaconMonitor.HandlePacket(packet, beaconFrame);
 
                 if (probeRequest != null)
-                    await ProbeMonitor.HandlePacket(packet, probeRequest);
+                    ProbeMonitor.HandlePacket(packet, probeRequest);
             }
             catch (Exception ex)
             {

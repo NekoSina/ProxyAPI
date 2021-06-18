@@ -12,7 +12,7 @@ namespace libwifimonitor
     {
         public ProbeMonitor(string path) : base(path) { }
 
-        public override async Task HandlePacket(RadioPacket packet, ProbeRequestFrame pr)
+        public override void HandlePacket(RadioPacket packet, ProbeRequestFrame pr)
         {
             var signal = packet[RadioTapType.DbmAntennaSignal];
             var ssidObj = pr.InformationElements.First(ie => ie.Id.ToString() == "ServiceSetIdentity");

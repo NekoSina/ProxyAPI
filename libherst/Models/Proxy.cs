@@ -1,9 +1,11 @@
-using System;
+using System;using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace libherst.Models
 {
     public class Proxy
     {
+        [Key]
         public ulong Id { get; set; }
         public string IP { get; set; }
         public ushort Port { get; set; }

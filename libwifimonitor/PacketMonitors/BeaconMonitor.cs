@@ -12,7 +12,7 @@ namespace libwifimonitor.PacketMonitors
     {
         public BeaconMonitor(string path) : base(path) { }
 
-        public override async Task HandlePacket(RadioPacket packet, BeaconFrame bp)
+        public override void HandlePacket(RadioPacket packet, BeaconFrame bp)
         {
             var signal = packet[RadioTapType.DbmAntennaSignal];
             var ssidObj = bp.InformationElements.First(b => b.Id.ToString() == "ServiceSetIdentity");

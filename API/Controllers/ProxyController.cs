@@ -1,9 +1,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using HerstAPI.Database;
-using HerstAPI.Models;
 using HerstAPI.Repositories;
 using HerstAPI.Services;
+using libherst.Models;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;

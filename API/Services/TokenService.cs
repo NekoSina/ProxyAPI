@@ -1,4 +1,4 @@
-using HerstAPI.Models;
+using libherst.Models;
 using HerstAPI.Repositories;
 
 namespace HerstAPI.Services

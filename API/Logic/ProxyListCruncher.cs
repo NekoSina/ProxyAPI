@@ -1,9 +1,9 @@
-using HerstAPI.Models;
 using HerstAPI.Repositories;
 using System;
 using System.Threading;
 using System.Collections.Concurrent;
 using HerstAPI.Database;
+using libherst.Models;
 
 namespace HerstAPI.Logic
 {
@@ -65,7 +65,7 @@ namespace HerstAPI.Logic
 
                     var proxy = new Proxy
                     {
-                        ID = Helpers.IpToInt(ip),
+                        Id = Helpers.IpToInt(ip),
                         IP = ip,
                         Port = port,
                         City = result.City,

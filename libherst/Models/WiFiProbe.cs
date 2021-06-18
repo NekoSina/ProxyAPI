@@ -1,9 +1,13 @@
 using System;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace libherst.Models
 {
     public class WiFiProbe
     {
+        [Key]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public ulong WiFiProbeId{get;set;}
         public WiFiMac WiFiMac {get; set; }
         public WiFiNetworkName WiFiNetworkName {get; set; }

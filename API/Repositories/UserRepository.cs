@@ -1,6 +1,6 @@
 using System.Linq;
 using HerstAPI.Database;
-using HerstAPI.Models;
+using libherst.Models;
 
 namespace HerstAPI.Repositories
 {
