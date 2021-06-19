@@ -37,7 +37,7 @@ namespace HerstAPI.Services
 
         internal IEnumerable<Proxy> GetProxiesToTest(int count)
         {
-            var proxies = _proxyRepository.GetProxies(string.Empty, string.Empty).OrderBy(p => p.LastTest).Where(p => !ProxyTestCache.Contains(p.Id)).Take(count);
+            var proxies = _proxyRepository.GetProxies(string.Empty, string.Empty).OrderBy(p => p.LastTest).AsEnumerable().Where(p => !ProxyTestCache.Contains(p.Id)).Take(count);
             foreach (var proxy in proxies)
                 ProxyTestCache.Add(proxy);
             return proxies;

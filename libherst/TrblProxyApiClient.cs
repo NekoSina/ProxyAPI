@@ -18,7 +18,7 @@ namespace libherst
 
         public async Task<BlockingCollection<Proxy>> GetProxiesAsync()
         {
-            var json = await HttpClient.GetStringAsync($"{ENDPOINT}/proxy");
+            var json = await HttpClient.GetStringAsync($"{ENDPOINT}/proxy/test");
             var proxies = JsonSerializer.Deserialize<IEnumerable<Proxy>>(json, SerializerOptions);
             var bc = new BlockingCollection<Proxy>();
 

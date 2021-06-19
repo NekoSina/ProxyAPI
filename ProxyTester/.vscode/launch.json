@@ -5,21 +5,15 @@
     "version": "0.2.0",
     "configurations": [
         {
-          "name": ".NET Core Launch (console)",
+          "name": "Launch Tester",
             "type": "coreclr",
             "request": "launch",
-            "preLaunchTask": "build",
-            "program": "${workspaceFolder}/bin/Debug/net5.0/ProxyTester.dll",
-            "args": ["trbl","herst","8"],
+            "preLaunchTask": "buildTester",
+            "program": "${workspaceFolder}/bin/Debug/net6.0/ProxyTester.dll",
+            "args": ["trbl","herst","http://192.168.0.2:5000/api","8"],
             "cwd": "${workspaceFolder}",
             "console": "internalConsole",
             "stopAtEntry": false
-        },
-        {
-            "name": ".NET Core Attach",
-            "type": "coreclr",
-            "request": "attach",
-            "processId": "${command:pickProcess}"
         }
     ]
 }

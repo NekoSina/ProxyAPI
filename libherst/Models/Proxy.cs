@@ -1,5 +1,5 @@
-using System;using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
+using System;
+using System.ComponentModel.DataAnnotations;
 
 namespace libherst.Models
 {
@@ -20,7 +20,6 @@ namespace libherst.Models
         public string Domain { get; set; }
         public string ISP { get; set; }
         public bool KnownAsProxy => !string.IsNullOrEmpty(AS);
-        public DateTime LastSeen { get; set; }
         public string ProxyType { get; set; }
         public string Threat { get; set; }
 

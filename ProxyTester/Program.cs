@@ -10,15 +10,18 @@ namespace ProxyTester
     {
         public static string USER = "demo";
         public static string PASS = "demo";
+        public static string ENDPOINT = "http://localhost:5000/api";
         public static int THREAD_COUNT = 8;
 
         static async Task Main(string[] args)
         {
             USER=args[0];
             PASS=args[1];
-            THREAD_COUNT= int.Parse(args[2]);
+            ENDPOINT = args[2];
+            THREAD_COUNT= int.Parse(args[3]);
 
             var trblClient = new TrblProxyApiClient();
+            TrblProxyApiClient.ENDPOINT = ENDPOINT;
 
             if (await trblClient.LoginAsync(USER, PASS))
             {

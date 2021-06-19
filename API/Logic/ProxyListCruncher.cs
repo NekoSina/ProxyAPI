@@ -42,10 +42,7 @@ namespace HerstAPI.Logic
 
                     var result = IpQuery.IPQuery(ip);
                     var proxyResult = ProxyQuery.GetAll(ip);
-                    var lastSeen = DateTime.MinValue;
-                    if (int.TryParse(proxyResult.Last_Seen, out var days))
-                        lastSeen = DateTime.UtcNow - TimeSpan.FromDays(days);
-
+                    
                     switch (proxyResult.Usage_Type)
                     {
                         case "COM": proxyResult.Usage_Type = "Commercial"; break;

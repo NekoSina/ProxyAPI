@@ -14,7 +14,7 @@ namespace libherst
     /// <Summary>Instantiate TrblProxyClient, TrblWifiClient,... instead</Summary>
     public abstract class TrblApiClient
     {
-        internal const string ENDPOINT = "http://localhost:5000/api";
+        public static string ENDPOINT = "http://localhost:5000/api";
         internal readonly JsonSerializerOptions SerializerOptions;
         internal readonly HttpClient HttpClient;
 
