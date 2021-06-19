@@ -6,6 +6,7 @@ using HerstAPI.Logic;
 using HerstAPI.Repositories;
 using libherst.Models;
 using Microsoft.AspNetCore.Http;
+using HerstAPI.Cache;
 
 namespace HerstAPI.Services
 {
@@ -13,8 +14,6 @@ namespace HerstAPI.Services
     {
         private readonly ProxyRepository _proxyRepository;
         public ProxyService(ProxyRepository repository) => _proxyRepository = repository;
-
-        public static Dictionary<ulong, Proxy> ProxiesBeingTested = new ();
 
         public void ReadFile(IFormFile file)
         {
@@ -30,17 +29,17 @@ namespace HerstAPI.Services
         }
 
         internal void AddProxy(Proxy proxy) => _proxyRepository.AddOrUpdateProxy(proxy);
-        internal void UpdateProxy(Proxy proxy) 
+        internal void UpdateProxy(Proxy proxy)
         {
-            ProxiesBeingTested.Remove(proxy.Id);
-             _proxyRepository.AddOrUpdateProxy(proxy);
+            ProxyTestCache.Remove(proxy.Id);
+            _proxyRepository.AddOrUpdateProxy(proxy);
         }
 
         internal IEnumerable<Proxy> GetProxiesToTest(int count)
         {
-            var proxies = _proxyRepository.GetProxies(string.Empty,string.Empty).OrderBy(p=> p.LastTest).Where(p=> !ProxiesBeingTested.ContainsKey(p.Id)).Take(count);
-            foreach(var proxy in proxies)
-                ProxiesBeingTested.Add(proxy.Id,proxy);
+            var proxies = _proxyRepository.GetProxies(string.Empty, string.Empty).OrderBy(p => p.LastTest).Where(p => !ProxyTestCache.Contains(p.Id)).Take(count);
+            foreach (var proxy in proxies)
+                ProxyTestCache.Add(proxy);
             return proxies;
         }
 
@@ -52,11 +51,11 @@ namespace HerstAPI.Services
             else
                 return false;
         }
-        public IEnumerable<Proxy> GetProxies(string country, string region,int hoursSinceTest,int score) 
+        public IEnumerable<Proxy> GetProxies(string country, string region, int hoursSinceTest, int score)
         {
             return _proxyRepository.GetProxies(country, region)
                        .Where(p => hoursSinceTest == 0 || p.LastTest.AddHours(hoursSinceTest) > DateTime.UtcNow)
-                       .Where(p => score == 0 || p.Score == score);;
+                       .Where(p => score == 0 || p.Score == score); ;
         }
         public void DeleteProxy(uint id)
         {
