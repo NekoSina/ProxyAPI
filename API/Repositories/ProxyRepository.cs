@@ -27,6 +27,7 @@ namespace HerstAPI.Repositories
                 oldProxy.Score = proxy.Score;
                 oldProxy.Working = proxy.Working;
                 oldProxy.LastTest = proxy.LastTest;
+                oldProxy.Type = proxy.Type;
                 Save();
                 return;
             }

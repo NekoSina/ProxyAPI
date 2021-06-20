@@ -18,11 +18,24 @@ namespace libherst
 
         public async Task<BlockingCollection<Proxy>> GetProxiesAsync()
         {
-            var json = await HttpClient.GetStringAsync($"{ENDPOINT}/proxy/test");
+            var json = await HttpClient.GetStringAsync($"{ENDPOINT}/proxy?working=true");
             var proxies = JsonSerializer.Deserialize<IEnumerable<Proxy>>(json, SerializerOptions);
             var bc = new BlockingCollection<Proxy>();
 
-            if (proxies != null) 
+            if (proxies != null)
+            {
+                foreach (var proxy in proxies)
+                    bc.Add(proxy);
+            }
+            return bc;
+        }
+        public async Task<BlockingCollection<Proxy>> GetProxiesAsync(string country)
+        {
+            var json = await HttpClient.GetStringAsync($"{ENDPOINT}/proxy?working=true?country={country}");
+            var proxies = JsonSerializer.Deserialize<IEnumerable<Proxy>>(json, SerializerOptions);
+            var bc = new BlockingCollection<Proxy>();
+
+            if (proxies != null)
             {
                 foreach (var proxy in proxies)
                     bc.Add(proxy);

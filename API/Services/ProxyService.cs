@@ -51,11 +51,12 @@ namespace HerstAPI.Services
             else
                 return false;
         }
-        public IEnumerable<Proxy> GetProxies(string country, string region, int hoursSinceTest, int score)
+        public IEnumerable<Proxy> GetProxies(bool working, string country, string region, int hoursSinceTest, int score)
         {
             return _proxyRepository.GetProxies(country, region)
                        .Where(p => hoursSinceTest == 0 || p.LastTest.AddHours(hoursSinceTest) > DateTime.UtcNow)
-                       .Where(p => score == 0 || p.Score == score); ;
+                       .Where(p => score == 0 || p.Score == score)
+                       .Where(p=> working == false || p.Working == working);
         }
         public void DeleteProxy(uint id)
         {

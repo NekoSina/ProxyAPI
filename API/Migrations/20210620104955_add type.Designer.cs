@@ -3,14 +3,16 @@ using System;
 using HerstAPI.Database;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace ProxyAPI.Migrations
 {
     [DbContext(typeof(HerstDbContext))]
-    partial class HerstDbContextModelSnapshot : ModelSnapshot
+    [Migration("20210620104955_add type")]
+    partial class addtype
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
