@@ -2,19 +2,16 @@ using System;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
-using ProxyAPI.Database;
-using ProxyAPI.Models;
-using ProxyAPI.Repositories;
-using ProxyAPI.Services;
+using HerstAPI.Database;
+using HerstAPI.Repositories;
+using HerstAPI.Services;
+using libherst.Models;
 
-namespace ProxyAPI.Controllers
+namespace HerstAPI.Controllers
 {
-    [Route("api/[controller]")]
     [ApiController]
     public class TokenController : ControllerBase
     {
@@ -24,10 +21,11 @@ namespace ProxyAPI.Controllers
         public TokenController(IConfiguration config)
         {
             _configuration = config;
-            _tokenService = new TokenService(new UserRepository(new ProxyDbContext()));
+            _tokenService = new TokenService(new UserRepository(new HerstDbContext()));
         }
 
         [HttpPost]
+        [Route("api/auth/token")]
         public ActionResult Post(UserInfo _userData)
         {
             if (_userData != null && _userData.Username != null && _userData.Password != null)

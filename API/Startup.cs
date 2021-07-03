@@ -5,17 +5,19 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
 using Microsoft.EntityFrameworkCore;
-using ProxyAPI.Database;
+using HerstAPI.Database;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using System.Text;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.AspNetCore.Identity;
 using AspNetCoreRateLimit;
+using System.Text.Json.Serialization;
 
-namespace ProxyAPI
+namespace HerstAPI
 {
     public class Startup
     {
+        public const string ConnectionString = "Data Source=Herst.db";
 
         public IConfiguration Configuration { get; }
 
@@ -23,42 +25,44 @@ namespace ProxyAPI
 
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
-        {
+        {            
             services.Configure<IpRateLimitOptions>(Configuration.GetSection("IpRateLimiting"));
-            services.AddDbContext<ProxyDbContext>(opt => opt.UseSqlite("Data Source=Proxy.db"));
-            services.AddControllers();
+            services.AddDbContext<HerstDbContext>(opt => opt.UseSqlite(ConnectionString));
+            services.AddControllers().AddJsonOptions(options=> {  
+                 options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles;
+            });
             services.AddMemoryCache();
             services.AddSingleton<IIpPolicyStore, MemoryCacheIpPolicyStore>();
             services.AddSingleton<IRateLimitCounterStore, MemoryCacheRateLimitCounterStore>();
             services.AddSingleton<IRateLimitConfiguration, RateLimitConfiguration>();
-            services.AddSwaggerGen(c =>
-            {
-                c.SwaggerDoc("v1", new OpenApiInfo { Title = "ProxyAPI", Version = "v1" });
-                var securityDefinition = new OpenApiSecurityScheme
-                {
-                    Name = "Bearer",
-                    BearerFormat = "JWT",
-                    Scheme = "bearer",
-                    Description = "Specify the authorization token.",
-                    In = ParameterLocation.Header,
-                    Type = SecuritySchemeType.Http,
-                };
-                c.AddSecurityDefinition("jwt_auth", securityDefinition);
+            _ = services.AddSwaggerGen(c =>
+              {
+                  c.SwaggerDoc("v1", new OpenApiInfo { Title = "Her.st Intelligence API", Version = "1.0" });
+                  var secDef = new OpenApiSecurityScheme
+                  {
+                      Name = "Bearer",
+                      BearerFormat = "JWT",
+                      Scheme = "bearer",
+                      Description = "Specify the authorization token.",
+                      In = ParameterLocation.Header,
+                      Type = SecuritySchemeType.Http,
+                  };
+                  c.AddSecurityDefinition("jwt_auth", secDef);
 
-                var securityScheme = new OpenApiSecurityScheme
-                {
-                    Reference = new OpenApiReference()
-                    {
-                        Id = "jwt_auth",
-                        Type = ReferenceType.SecurityScheme
-                    }
-                };
-                var securityRequirements = new OpenApiSecurityRequirement
-                {
-                    {securityScheme, new string[] { }},
-                };
-                c.AddSecurityRequirement(securityRequirements);
-            });
+                  var secScheme = new OpenApiSecurityScheme
+                  {
+                      Reference = new OpenApiReference
+                      {
+                          Id = "jwt_auth",
+                          Type = ReferenceType.SecurityScheme
+                      }
+                  };
+                  var secReqs = new OpenApiSecurityRequirement
+                  {
+                    {secScheme, System.Array.Empty<string>()},
+                  };
+                  c.AddSecurityRequirement(secReqs);
+              });
 
             services.AddAuthentication(options =>
             {
@@ -76,7 +80,7 @@ namespace ProxyAPI
                 };
             });
 
-            services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true).AddEntityFrameworkStores<ProxyDbContext>();
+            services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true).AddEntityFrameworkStores<HerstDbContext>();
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
@@ -87,7 +91,7 @@ namespace ProxyAPI
                 app.UseSwagger();
                 app.UseSwaggerUI(c =>
                 {
-                    c.SwaggerEndpoint("/swagger/v1/swagger.json", "My API V1");
+                    c.SwaggerEndpoint("/swagger/v1/swagger.json", "Her.st Intelligence API");
                     c.RoutePrefix = string.Empty;
                 });
             }

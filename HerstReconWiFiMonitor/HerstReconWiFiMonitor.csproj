@@ -1,0 +1,21 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net5.0</TargetFramework>
+    <Nullable>disable</Nullable>
+    <PublishSingleFile>true</PublishSingleFile>
+    <PublishReadyToRun>false</PublishReadyToRun>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="Avalonia" Version="0.10.3" />
+    <PackageReference Include="Avalonia.Desktop" Version="0.10.3" />
+    <PackageReference Include="Avalonia.Diagnostics" Version="0.10.3" />
+    <PackageReference Include="CliWrap" Version="3.3.1" />
+    <PackageReference Include="SharpPcap" Version="5.4.0" />
+    <ProjectReference Include="../libherst/libherst.csproj" />
+    <ProjectReference Include="../libwifimonitor/libwifimonitor.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <AvaloniaResource Include="img.png" />
+  </ItemGroup>
+</Project>

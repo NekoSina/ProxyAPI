@@ -1,41 +1,45 @@
 using System;
 using System.Linq;
-using ProxyAPI.Database;
-using ProxyAPI.Models;
+using HerstAPI.Database;
+using libherst.Models;
 
-namespace ProxyAPI.Repositories
+namespace HerstAPI.Repositories
 {
     public class ProxyRepository
     {
-        private readonly ProxyDbContext db;
-        public ProxyRepository(ProxyDbContext context) => db = context;
+        private readonly HerstDbContext db;
+        public ProxyRepository(HerstDbContext context) => db = context;
 
         private bool TryGetProxy(ulong id, out Proxy proxy)
         {
             proxy = db.Proxies.Find(id);
             return proxy != null;
         }
-        public IQueryable<Proxy> GetProxies(string region, string country, int hoursSinceTest) 
+        public IQueryable<Proxy> GetProxies(string region, string country)
         {
             return db.Proxies.Where(p => string.IsNullOrEmpty(region) || p.Region == region)
-                       .Where(p => string.IsNullOrEmpty(country) || p.Country == country)
-                       .Where(p=> hoursSinceTest == 0 || p.LastTest.AddHours(hoursSinceTest) > DateTime.UtcNow);
+                             .Where(p => string.IsNullOrEmpty(country) || p.Country == country);
         }
         public void AddOrUpdateProxy(Proxy proxy)
         {
-            if (TryGetProxy(proxy.ID, out var oldProxy))
+            if (TryGetProxy(proxy.Id, out var oldProxy))
             {
-                oldProxy.IP = proxy.IP;
-                oldProxy.Port = proxy.Port;
-                oldProxy.Region = proxy.Region;
-                oldProxy.Country = proxy.Country;
-                oldProxy.City = proxy.City;
+                oldProxy.Score = proxy.Score;
+                oldProxy.Working = proxy.Working;
                 oldProxy.LastTest = proxy.LastTest;
+                oldProxy.Type = proxy.Type;
                 Save();
                 return;
             }
             db.Proxies.Add(proxy);
             Save();
+        }
+        public bool TryAddProxy(Proxy proxy)
+        {
+            if (TryGetProxy(proxy.Id, out var _))
+                return false;
+            db.Proxies.Add(proxy);
+            Save(); return true;
         }
         public void DeleteProxy(uint id)
         {

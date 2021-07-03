@@ -1,16 +1,18 @@
+using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using ProxyAPI.Models;
+using HerstAPI.Logic;
+using HerstAPI.Repositories;
+using libherst.Models;
 using Microsoft.AspNetCore.Http;
-using ProxyAPI.Repositories;
-using ProxyAPI.Logic;
-using System.Collections.Generic;
+using HerstAPI.Cache;
 
-namespace ProxyAPI.Services
+namespace HerstAPI.Services
 {
     public class ProxyService
     {
-        private ProxyRepository _proxyRepository;
+        private readonly ProxyRepository _proxyRepository;
         public ProxyService(ProxyRepository repository) => _proxyRepository = repository;
 
         public void ReadFile(IFormFile file)
@@ -27,9 +29,21 @@ namespace ProxyAPI.Services
         }
 
         internal void AddProxy(Proxy proxy) => _proxyRepository.AddOrUpdateProxy(proxy);
-        internal void UpdateProxy(Proxy proxy) => _proxyRepository.AddOrUpdateProxy(proxy);
+        internal void UpdateProxy(Proxy proxy)
+        {
+            ProxyTestCache.Remove(proxy.Id);
+            _proxyRepository.AddOrUpdateProxy(proxy);
+        }
 
-        private bool CheckFileSize(IFormFile file)
+        internal IEnumerable<Proxy> GetProxiesToTest(int count)
+        {
+            var proxies = _proxyRepository.GetProxies(string.Empty, string.Empty).OrderBy(p => p.LastTest).AsEnumerable().Where(p => !ProxyTestCache.Contains(p.Id)).Take(count);
+            foreach (var proxy in proxies)
+                ProxyTestCache.Add(proxy);
+            return proxies;
+        }
+
+        private static bool CheckFileSize(IFormFile file)
         {
             var size = 10 * 1024 * 1024;
             if (file.Length < size)
@@ -37,16 +51,12 @@ namespace ProxyAPI.Services
             else
                 return false;
         }
-        public IEnumerable<Proxy> GetProxies(string country, string region,int hoursSinceTest) 
+        public IEnumerable<Proxy> GetProxies(bool working, string country, string region, int hoursSinceTest, int score)
         {
-            return _proxyRepository.GetProxies(country, region,hoursSinceTest);
-            // var count = proxies.Count();
-
-            // if(count ==0)
-            //     return null;
-
-            // var idx = Helpers.Random.Next(0,count);
-            // return proxies.Skip(idx).First();
+            return _proxyRepository.GetProxies(country, region)
+                       .Where(p => hoursSinceTest == 0 || p.LastTest.AddHours(hoursSinceTest) > DateTime.UtcNow)
+                       .Where(p => score == 0 || p.Score == score)
+                       .Where(p=> working == false || p.Working == working);
         }
         public void DeleteProxy(uint id)
         {
